@@ -1,0 +1,20 @@
+/* src/styles/variables.css */
+@import "tailwindcss";
+/* Hunting Farm Brand Colors */
+:root {
+  --earthy-green: #4a6b3c;      /* Rich natural green */
+  --olive-green: #6b8e23;       /* Muted olive tone */
+  --rusty-orange: #c75b2b;      /* Warm rustic orange */
+  --deep-brown: #3b2f2f;        /* Dark earthy brown */
+  --sandy-beige: #f5f0e1;       /* Light warm beige */
+  --sunset-yellow: #f4c542;     /* Highlight yellow */
+  --light-gray: #f7f7f7;        /* Neutral background */
+
+}
+
+/* Font sizes for consistency */
+:root {
+  --font-lg: 1.25rem;
+  --font-xl: 1.5rem;
+  --font-2xl: 2rem;
+}
