@@ -1,19 +1,7 @@
-// src/pages/AboutUs.tsx
 import React, { useEffect, useState } from "react";
-import {
-  ArrowLeft,
-  Users,
-  Shield,
-  Trophy,
-  Heart,
-  Award,
-  MapPin,
-  Phone,
-  Mail,
-} from "lucide-react";
+import { Users, Shield, Trophy, Heart, Award } from "lucide-react";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
-import Header from "../components/Header";
 
 const fallbackImage =
   "https://via.placeholder.com/320x320?text=No+Image+Available";

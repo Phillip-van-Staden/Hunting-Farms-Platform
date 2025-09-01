@@ -4,7 +4,6 @@ import {
   Users,
   FileText,
   Eye,
-  Edit,
   Trash2,
   CheckCircle,
   Shield,
@@ -35,7 +34,6 @@ const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // helper getters to tolerate different backend casing/aliases
   const idOf = (obj: any, ...candidates: string[]) => {
     for (const c of candidates) if (obj && obj[c] !== undefined) return obj[c];
     return undefined;
@@ -103,7 +101,6 @@ const AdminDashboard: React.FC = () => {
 
   useEffect(() => {
     refreshAll();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleApproveBlog = async (blogId: any) => {
@@ -159,8 +156,7 @@ const AdminDashboard: React.FC = () => {
 
     try {
       const id = idOf(user, "pid", "id", "pId", "_id") ?? userId;
-      // adminController.updateUser sets pblocked = TRUE. If you want toggle, backend needs endpoint for unban.
-      // Here we call the update endpoint (sets pblocked true). If backend has toggle endpoint, change accordingly.
+
       const res = await fetch(`${API_URL}/admin/users/${id}`, {
         method: "PUT",
       });

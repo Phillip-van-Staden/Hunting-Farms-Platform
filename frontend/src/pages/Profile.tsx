@@ -56,7 +56,7 @@ export function ProfileScreen({ user }: ProfileScreenProps) {
         });
 
         setNotifications({
-          weeklyUpdates: data.psubscribe, // assuming psubscribe is boolean
+          weeklyUpdates: data.psubscribe,
         });
       } catch (err) {
         console.error(err);

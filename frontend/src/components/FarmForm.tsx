@@ -17,7 +17,7 @@ export interface FarmFormValues {
   game_list: string[];
   amenities: string[];
   contact_info: { phone: string; email: string; website: string };
-  images: string[]; // URLs (existing) or blob URLs (new)
+  images: string[];
   pricing: { dailyRate: number; gamePricing: GamePricing[] };
 }
 

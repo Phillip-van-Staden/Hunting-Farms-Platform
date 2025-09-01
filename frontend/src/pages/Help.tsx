@@ -1,24 +1,18 @@
-// src/pages/Help.tsx
 import React, { useState } from "react";
 import {
-  ArrowLeft,
   Phone,
   Mail,
   MapPin,
   Clock,
-  MessageCircle,
   HelpCircle,
   Search,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
 import Footer from "../components/Footer";
-import Header from "../components/Header";
 
 const Help: React.FC = () => {
-  const navigate = useNavigate();
-
   const [searchQuery, setSearchQuery] = useState("");
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("general");

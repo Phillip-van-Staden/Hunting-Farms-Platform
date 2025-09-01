@@ -45,33 +45,11 @@ interface Farm {
   };
 }
 
-function ImageWithFallback({
-  src,
-  alt,
-  className,
-}: {
-  src?: string;
-  alt?: string;
-  className?: string;
-}) {
-  const [errored, setErrored] = useState(false);
-  const fallback = "https://via.placeholder.com/400x300?text=No+Image";
-  return (
-    <img
-      src={!errored && src ? src : fallback}
-      alt={alt || "image"}
-      onError={() => setErrored(true)}
-      className={className}
-    />
-  );
-}
-
 const OwnerDashboardScreen: React.FC<{ user: User | null }> = ({ user }) => {
   const navigate = useNavigate();
   const [myFarms, setMyFarms] = useState<Farm[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Replace with logged-in ownerId from auth context/localstorage
   const ownerId = user?.id || null;
 
   useEffect(() => {
@@ -167,7 +145,7 @@ const OwnerDashboardScreen: React.FC<{ user: User | null }> = ({ user }) => {
 
                 {farm.images && (
                   <div className="flex gap-4 overflow-x-auto pb-2 mt-2">
-                    {farm.images.slice(0, 4).map((img, idx) => (
+                    {farm.images.slice(0, 4).map((img) => (
                       <img
                         src={`http://localhost:5000/uploads/${img}`}
                         alt="Farm"

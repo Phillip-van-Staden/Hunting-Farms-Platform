@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import { ReviewModal } from "../components/ReviewForm";
 
 interface Review {
   id: number;
@@ -24,17 +23,12 @@ interface Review {
   comment: string;
 }
 
-interface Game {
-  name: string;
-  price?: number;
-}
-
 interface FarmFromApi {
   id: number;
   name: string;
   province?: string;
   description?: string;
-  images?: any[]; // filenames (string) or Buffer-like objects
+  images?: any[];
   dailyRate?: number;
   categories?: string[];
   amenities?: string[];
@@ -46,7 +40,6 @@ interface FarmFromApi {
   address?: string;
   rating?: number; // average rating
   reviewCount?: number; // number of reviews
-  // any other fields come through will be ignored
 }
 
 // Fallback image handler component
@@ -110,7 +103,6 @@ export default function FarmDetailsOwner() {
         setImages(normalized);
         setSelectedImageIndex(0);
 
-        // ✅ add this line
         setFarmReviews(data.reviews || []);
 
         setError(null);
@@ -199,8 +191,6 @@ export default function FarmDetailsOwner() {
   const handleEditFarm = () => {
     navigate(`/owner/edit-farm/${id}`, { state: { rawFarm: farm } });
   };
-
-  //rest of the code
 
   const handleDeleteFarm = () => {
     setIsDeleteConfirmOpen(true);

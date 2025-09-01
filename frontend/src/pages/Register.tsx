@@ -4,17 +4,7 @@ import Footer from "../components/Footer";
 import { Eye, EyeOff, UserPlus, Users, Building } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
-// interface User {
-//   //id: Number;
-//   first_name: string;
-//   last_name: string;
-//   email: string;
-//   admin: boolean;
-//   category: string;
-// }
-
 interface RegisterProps {
-  // optional so component still works if App.tsx hasn't been updated yet
   onRegisterSuccess?: () => void;
 }
 
@@ -99,17 +89,6 @@ export const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
         throw new Error(data.message || "Failed to register.");
       }
 
-      // Map to the front-end user shape expected by App/Header:
-      // const user: User = {
-      //   first_name: formData.firstName,
-      //   last_name: formData.lastName,
-      //   email: formData.email,
-      //   admin: data.padmin,
-      //   category: data.pcategory,
-      // };
-
-      // Persist + update App state (if callback provided)
-      //localStorage.setItem("user", JSON.stringify(user));
       if (onRegisterSuccess) {
         onRegisterSuccess();
       }

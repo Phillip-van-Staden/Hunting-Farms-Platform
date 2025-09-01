@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -61,9 +61,9 @@ function App() {
             path="/blog"
             element={
               <BlogScreen
-                onScreenChange={function (screen: string): void {
-                  throw new Error("Function not implemented.");
-                }}
+                // onScreenChange={function (screen: string): void {
+                //   throw new Error("Function not implemented.");
+                // }}
                 user={user}
               />
             }

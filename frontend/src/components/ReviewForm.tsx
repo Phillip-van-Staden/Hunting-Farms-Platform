@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-// Define the Review type locally or import it as a type from the correct file
+import { useState } from "react";
 interface Review {
   id: number;
   rating: number;
@@ -8,9 +7,6 @@ interface Review {
   author: string;
 }
 
-/* -------------------------
-   Review Modal (local)
-   ------------------------- */
 interface User {
   first_name: string;
   last_name: string;
@@ -24,7 +20,7 @@ interface ReviewModalProps {
   onClose: () => void;
   onSubmit: (r: Review) => void;
   farmName: string;
-  user: User | null; // Added user prop
+  user: User | null;
 }
 
 export function ReviewModal({

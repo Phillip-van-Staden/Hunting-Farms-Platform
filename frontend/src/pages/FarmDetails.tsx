@@ -92,8 +92,6 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [farmReviews, setFarmReviews] = useState<Review[]>([]);
 
-  // const API_URL = "http://localhost:5000";
-
   useEffect(() => {
     if (!id) return;
     const fetchFarm = async () => {
@@ -103,24 +101,9 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
         if (!res.ok) throw new Error(`Failed to fetch farm: ${res.statusText}`);
         const data: Farm & { reviews?: Review[] } = await res.json();
 
-        // normalize images
-        const imgsRaw: any[] = Array.isArray(data.images) ? data.images : [];
-        const normalized: string[] = imgsRaw
-          .map((img) => {
-            if (!img) return null;
-            if (typeof img === "string") {
-              if (img.startsWith("http") || img.startsWith("data:")) return img;
-              return `${API_URL}/uploads/${img}`;
-            }
-            return null;
-          })
-          .filter(Boolean) as string[];
-
         setFarmData(data);
-        // setImages(normalized);
         setSelectedImageIndex(0);
 
-        // ✅ add this line
         setFarmReviews(data.reviews || []);
 
         setError(null);
@@ -128,7 +111,6 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
         console.error(err);
         setError(err.message || "Error loading farm");
         setFarmData(null);
-        // setImages([]);
         setFarmReviews([]);
       } finally {
         setLoading(false);
@@ -198,7 +180,7 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: user.id, // or user.id if your User object has a numeric ID
+          userId: user.id,
           rating: review.rating,
           comment: review.comment,
         }),
@@ -207,10 +189,9 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
       if (!res.ok) throw new Error("Failed to submit review");
       const data = await res.json();
 
-      // Add new review to state
       setFarmReviews((prev) => [
         {
-          id: data.review.rid, // assuming `rid` is PK in Reviews table
+          id: data.review.rid,
           author: `${user.first_name} ${user.last_name}`,
           rating: data.review.rstar,
           date: new Date().toISOString().split("T")[0],

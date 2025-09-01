@@ -1,13 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  Calendar,
-  User,
-  Clock,
-  Search,
-  Tag,
-  ChevronRight,
-  Plus,
-} from "lucide-react";
+import { useState, useEffect } from "react";
+import { Calendar, User, Search, Tag, ChevronRight, Plus } from "lucide-react";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -31,7 +23,7 @@ interface Blog {
   btags: string[];
   bstatus: string;
   bdate: string;
-  author?: string; // You may want to map this from backend users later
+  author?: string;
 }
 
 function ImageWithFallback({
@@ -47,7 +39,6 @@ function ImageWithFallback({
 }
 
 interface BlogScreenProps {
-  onScreenChange: (screen: string) => void;
   user: User | null;
 }
 

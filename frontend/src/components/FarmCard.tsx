@@ -1,4 +1,3 @@
-// src/components/FarmCard.tsx
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -32,7 +31,9 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
       <div className="p-4 flex flex-col justify-between h-full">
         {/* Name & Location */}
         <div>
-          <h2 className="text-lg font-bold text-[var(--deep-brown)]">{farm.name}</h2>
+          <h2 className="text-lg font-bold text-[var(--deep-brown)]">
+            {farm.name}
+          </h2>
           <p className="text-sm text-[var(--olive-green)]">
             {farm.location || "Location not specified"}
           </p>
@@ -46,7 +47,9 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm }) => {
         {/* Price & Button */}
         <div className="mt-4 flex items-center justify-between">
           <span className="text-[var(--rusty-orange)] font-bold">
-            {farm.price_per_day ? `R${farm.price_per_day}/day` : "Contact for pricing"}
+            {farm.price_per_day
+              ? `R${farm.price_per_day}/day`
+              : "Contact for pricing"}
           </span>
           <Link
             to={`/farms/${farm.id}`}

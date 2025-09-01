@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Send, Eye, Upload, X, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 interface User {
@@ -43,7 +42,6 @@ export function AddBlogs({ user }: { user: User | null }) {
       objectUrl = URL.createObjectURL(featuredImageFile);
       setFeaturedImagePreview(objectUrl);
     } else {
-      // if no file, clear preview (we might keep blogData.featuredImage if needed)
       setFeaturedImagePreview("");
     }
 
@@ -125,7 +123,6 @@ export function AddBlogs({ user }: { user: User | null }) {
       formData.append("pID", String(user?.id || 0));
       formData.append("bTags", blogData.tags.join(",")); // backend will split
       if (featuredImageFile) {
-        // multer on server expects field name 'bimage' (lowercase)
         formData.append("bimage", featuredImageFile);
       }
 
@@ -248,7 +245,7 @@ export function AddBlogs({ user }: { user: User | null }) {
             </select>
           </div>
 
-          {/* tags, image uploader and other fields (kept as existing implementation) */}
+          {/* tags, image uploader and other fields */}
           <div className="mb-6">
             <label className="block font-bold text-brown mb-4 text-xl">
               Tags

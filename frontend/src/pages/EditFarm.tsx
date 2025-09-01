@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import FarmForm from "../components/FarmForm";
@@ -112,7 +112,6 @@ export default function EditFarmScreen({ user }: AddFarmScreenProps) {
       }
     };
     boot();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleCancel = () => navigate(-1);
@@ -131,13 +130,13 @@ export default function EditFarmScreen({ user }: AddFarmScreenProps) {
       formData.append("phone", values.contact_info.phone);
       formData.append("email", values.contact_info.email);
       formData.append("website", values.contact_info.website);
-      formData.append("userId", user.id.toString()); // Use real user ID
+      formData.append("userId", user.id.toString());
 
       // arrays to text[] columns
       formData.append("categories", formatToPostgresArray(values.categories));
       formData.append("amenities", formatToPostgresArray(values.amenities));
 
-      // JSON strings (⚠️ your update route must JSON.parse these)
+      // JSON strings
       const pricingMap = new Map<string, GamePricing>();
       values.pricing.gamePricing.forEach((p) => pricingMap.set(p.species, p));
       const gameList = values.game_list.map((species) => ({
@@ -160,7 +159,6 @@ export default function EditFarmScreen({ user }: AddFarmScreenProps) {
           )
         )
       );
-      // ✅ match backend path
       const res = await fetch(`${API_URL}/farms/${id}/farmdetails`, {
         method: "PUT",
         body: formData,

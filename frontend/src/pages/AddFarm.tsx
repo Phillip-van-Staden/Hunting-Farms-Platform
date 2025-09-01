@@ -1,4 +1,3 @@
-import React from "react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import FarmForm from "../components/FarmForm";
@@ -28,7 +27,6 @@ export default function AddFarmScreen({ user }: AddFarmScreenProps) {
     try {
       const formData = new FormData();
 
-      // scalar / text
       formData.append("name", values.name);
       formData.append("province", values.province);
       formData.append("city", values.city);
@@ -39,11 +37,9 @@ export default function AddFarmScreen({ user }: AddFarmScreenProps) {
       formData.append("website", values.contact_info.website);
       formData.append("userId", String(user.id)); // Use real user ID
 
-      // arrays as postgres array literal -> your backend inserts directly into text[] columns
       formData.append("categories", formatToPostgresArray(values.categories));
       formData.append("amenities", formatToPostgresArray(values.amenities));
 
-      // JSON strings (your /addfarm route JSON.parses both)
       const pricingMap = new Map<string, GamePricing>();
       values.pricing.gamePricing.forEach((p) => pricingMap.set(p.species, p));
       const gameList = values.game_list.map((species) => ({

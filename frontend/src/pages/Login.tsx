@@ -1,9 +1,8 @@
 // src/pages/Login.tsx
 import React, { useState } from "react";
-import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, LogIn, Shield, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, LogIn, Shield } from "lucide-react";
 
 interface LoginProps {
   onLoginSuccess: (user: {
@@ -49,14 +48,9 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
       const data = await res.json();
 
       if (!res.ok) {
-        // backend sends { message: '...' } on errors
         setError(data?.message || "Login failed. Please try again.");
         return;
       }
-
-      // Map to the front-end user shape expected by App/Header:
-      // success: navigate to root
-      // optional: store minimal login state (email) — adjust when you add JWT
 
       localStorage.setItem("user", JSON.stringify(data));
       onLoginSuccess(data);

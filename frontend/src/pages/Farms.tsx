@@ -1,27 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Search, MapPin, Star, TreePine, Grid3X3, List } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import Header from "../components/Header";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-function ImageWithFallback({
-  src,
-  fallbackSrc = "https://via.placeholder.com/400x300?text=No+Image",
-  alt,
-  ...props
-}: React.ImgHTMLAttributes<HTMLImageElement> & { fallbackSrc?: string }) {
-  const [imgSrc, setImgSrc] = useState(src);
-  return (
-    <img
-      src={imgSrc}
-      alt={alt}
-      onError={() => setImgSrc(fallbackSrc)}
-      {...props}
-    />
-  );
-}
 
 interface Farm {
   id: string;

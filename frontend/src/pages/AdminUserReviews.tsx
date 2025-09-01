@@ -1,5 +1,4 @@
-// src/pages/AdminUserReviews.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Star, Trash2 } from "lucide-react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
@@ -27,7 +26,6 @@ export function AdminUserReviews() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // helper to tolerate different backend casing/aliases
   const idOf = (obj: AnyObj | undefined, ...candidates: string[]) => {
     if (!obj) return undefined;
     for (const c of candidates) if (obj && obj[c] !== undefined) return obj[c];
@@ -56,7 +54,7 @@ export function AdminUserReviews() {
 
   const userId = getUserId();
 
-  // derive a display user object (prefer passed user state)
+  // derive a display user object
   const displayUser = {
     id: userId ?? passedUser?.pid ?? passedUser?.id ?? "",
     name:
@@ -100,7 +98,6 @@ export function AdminUserReviews() {
     };
 
     fetchReviews();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const handleDeleteReview = async (reviewId: number) => {
@@ -115,14 +112,14 @@ export function AdminUserReviews() {
     try {
       setLoading(true);
       const res = await fetch(`${API_URL}/admin/users/reviews/${reviewId}`, {
-        method: "PUT", // your backend sets rdeleted = true on PUT /reviews/:id
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
       });
       if (!res.ok) {
         const txt = await res.text().catch(() => null);
         throw new Error(`Failed to delete review: ${res.status} ${txt ?? ""}`);
       }
-      // Optimistic update
+
       setReviews((prev) => prev.filter((r) => r.rid !== reviewId));
     } catch (err: any) {
       console.error("Error deleting review:", err);

@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
-  ArrowRight,
-  Leaf,
   Users,
-  ShoppingBag,
   Star,
-  BookOpen,
   MapPin,
   LucideBookOpen,
   Search,
@@ -47,7 +43,7 @@ interface Blog {
   btags: string[];
   bstatus: string;
   bdate: string;
-  author?: string; // You may want to map this from backend users later
+  author?: string;
 }
 
 const Home: React.FC = () => {
