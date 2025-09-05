@@ -26,17 +26,17 @@ interface Blog {
   author?: string;
 }
 
-function ImageWithFallback({
-  src,
-  alt,
-  className,
-}: {
-  src: string;
-  alt: string;
-  className?: string;
-}) {
-  return <img src={`${API_URL}${src}`} alt={alt} className={className} />;
-}
+// function ImageWithFallback({
+//   src,
+//   alt,
+//   className,
+// }: {
+//   src: string;
+//   alt: string;
+//   className?: string;
+// }) {
+//   return <img src={`${API_URL}${src}`} alt={alt} className={className} />;
+// }
 
 interface BlogScreenProps {
   user: User | null;
@@ -158,7 +158,7 @@ export function BlogScreen({ user }: BlogScreenProps) {
             <div className="lg:flex">
               {featuredPost.bimage && (
                 <div className="lg:w-1/2">
-                  <ImageWithFallback
+                  <img
                     src={featuredPost.bimage}
                     alt={featuredPost.btitle}
                     className="w-full h-80 lg:h-full object-cover"
@@ -245,7 +245,7 @@ export function BlogScreen({ user }: BlogScreenProps) {
               >
                 {post.bimage && (
                   <div className="relative">
-                    <ImageWithFallback
+                    <img
                       src={post.bimage}
                       alt={post.btitle}
                       className="w-full h-72 object-cover"

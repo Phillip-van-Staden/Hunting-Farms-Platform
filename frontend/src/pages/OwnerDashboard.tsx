@@ -147,7 +147,7 @@ const OwnerDashboardScreen: React.FC<{ user: User | null }> = ({ user }) => {
                   <div className="flex gap-4 overflow-x-auto pb-2 mt-2">
                     {farm.images.slice(0, 4).map((img) => (
                       <img
-                        src={`http://localhost:5000/uploads/${img}`}
+                        src={`${img}`}
                         alt="Farm"
                         style={{
                           width: "200px",

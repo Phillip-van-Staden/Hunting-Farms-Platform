@@ -134,7 +134,7 @@ export function BlogArticle() {
               <div className="mb-12">
                 <div className="relative h-96 lg:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
                   <img
-                    src={`${API_URL}${article.bimage}`}
+                    src={article.bimage}
                     alt={article.btitle}
                     className="w-full h-full object-cover"
                   />

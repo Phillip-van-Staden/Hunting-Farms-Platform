@@ -49,8 +49,8 @@ export default function EditFarmScreen({ user }: AddFarmScreenProps) {
       .map((img) => {
         if (!img) return null;
         if (typeof img === "string") {
-          if (img.startsWith("http") || img.startsWith("data:")) return img;
-          return `${API_URL}/uploads/${img}`;
+          if (img.startsWith("http")) return img;
+          // return `${API_URL}/uploads/${img}`;
         }
         return null;
       })

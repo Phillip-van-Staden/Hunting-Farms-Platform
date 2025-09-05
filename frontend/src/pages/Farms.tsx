@@ -133,7 +133,7 @@ export default function FarmsPage() {
       <div className={`${isListView ? "w-1/3" : "h-48"} bg-gray-200 relative`}>
         {farm.images && farm.images[0] ? (
           <img
-            src={`${API_URL}/uploads/${farm.images[0]}`}
+            src={`${farm.images[0]}`}
             alt={farm.name}
             className="w-full h-full object-cover rounded-l-lg"
           />

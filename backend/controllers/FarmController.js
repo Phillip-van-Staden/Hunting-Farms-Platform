@@ -1,7 +1,5 @@
-const pool = require('../db');
-const path = require('path');
-const fs = require('fs');
-
+const pool = require("../db");
+const cloudinary = require("../cloudinary");
 exports.getAllFarms = async (req, res) => {
   try {
     const farmQuery = `
@@ -29,8 +27,8 @@ exports.getAllFarms = async (req, res) => {
       GROUP BY f.fid;
     `;
     const result = await pool.query(farmQuery);
-    const farms = result.rows.map(row => {
-      const [lat, lon] = row.fgps ? row.fgps.split(',') : [null, null];
+    const farms = result.rows.map((row) => {
+      const [lat, lon] = row.fgps ? row.fgps.split(",") : [null, null];
       return {
         id: row.fid,
         name: row.fname,
@@ -92,8 +90,8 @@ exports.getFarmsByOwner = async (req, res) => {
       GROUP BY f.fid;
     `;
     const result = await pool.query(farmQuery, [ownerId]);
-    const farms = result.rows.map(row => {
-      const [lat, lon] = row.fgps ? row.fgps.split(',') : [null, null];
+    const farms = result.rows.map((row) => {
+      const [lat, lon] = row.fgps ? row.fgps.split(",") : [null, null];
       return {
         id: row.fid,
         name: row.fname,
@@ -129,7 +127,7 @@ exports.getFarmsByOwner = async (req, res) => {
 exports.getFarmDetails = async (req, res) => {
   const farmId = req.params.fId;
   try {
- // Step 1: Farm Details + Average Stars
+    // Step 1: Farm Details + Average Stars
     const farmQuery = `
       SELECT f.fid, f.fname, f.fprovince, f.fdescription, f.fcategory, f.fdailyrate,
              f.fphone, f.femail, f.fwebsite, f.fadress, f.fgps, f.ffacilities, f.pid,
@@ -143,7 +141,7 @@ exports.getFarmDetails = async (req, res) => {
     const farmRes = await pool.query(farmQuery, [farmId]);
 
     if (farmRes.rowCount === 0) {
-      return res.status(404).send('Farm not found');
+      return res.status(404).send("Farm not found");
     }
 
     const farmDetails = farmRes.rows[0];
@@ -156,31 +154,36 @@ exports.getFarmDetails = async (req, res) => {
       WHERE fd.fid = $1;
     `;
     const deerRes = await pool.query(deerQuery, [farmId]);
-    const gameList = deerRes.rows.map(row => ({
+    const gameList = deerRes.rows.map((row) => ({
       species: row.dtipe,
       malePrice: row.fdmaleprice,
-      femalePrice: row.fdfemaleprice
+      femalePrice: row.fdfemaleprice,
     }));
 
     // Step 3: Images
     const imagesQuery = `SELECT fimagepath FROM FarmsImage WHERE fid = $1;`;
     const imagesRes = await pool.query(imagesQuery, [farmId]);
-    const images = imagesRes.rows.map(r => r.fimagepath).filter(Boolean);
+    const images = imagesRes.rows.map((r) => r.fimagepath).filter(Boolean);
 
     // Step 4: Amenities
     let amenities = [];
     if (farmDetails.ffacilities) {
       if (Array.isArray(farmDetails.ffacilities)) {
         amenities = farmDetails.ffacilities;
-      } else if (typeof farmDetails.ffacilities === 'string') {
-        amenities = farmDetails.ffacilities.split(',').map(s => s.trim()).filter(Boolean);
+      } else if (typeof farmDetails.ffacilities === "string") {
+        amenities = farmDetails.ffacilities
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
       }
     }
 
     // Step 5: Categories
     const categories = Array.isArray(farmDetails.fcategory)
       ? farmDetails.fcategory
-      : (farmDetails.fcategory ? [farmDetails.fcategory] : []);
+      : farmDetails.fcategory
+      ? [farmDetails.fcategory]
+      : [];
 
     // Step 6: Reviews
     const reviewsQuery = `
@@ -191,12 +194,12 @@ exports.getFarmDetails = async (req, res) => {
       ORDER BY r.rdate DESC;
     `;
     const reviewsRes = await pool.query(reviewsQuery, [farmId]);
-    const reviews = reviewsRes.rows.map(r => ({
+    const reviews = reviewsRes.rows.map((r) => ({
       id: r.rid,
       author: r.author,
       rating: r.rstar,
       date: r.rdate,
-      comment: r.rdescription
+      comment: r.rdescription,
     }));
 
     // Build final response
@@ -218,18 +221,18 @@ exports.getFarmDetails = async (req, res) => {
       images,
       rating: parseFloat(farmDetails.avg_rating) || 0,
       reviewCount: parseInt(farmDetails.review_count, 10) || 0,
-      reviews
+      reviews,
     };
 
     res.status(200).json(farmData);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Error fetching farm data');
+    res.status(500).send("Error fetching farm data");
   }
 };
 
 exports.addFarm = async (req, res) => {
-   try {
+  try {
     const {
       name,
       province,
@@ -243,12 +246,26 @@ exports.addFarm = async (req, res) => {
       website,
       gpsCoordinates,
       amenities,
-      userId
+      userId,
     } = req.body;
 
-    // Collect image paths from the upload
-    const images = req.files ? req.files.map(file => file.path) : [];
-    const parsedGameList = JSON.parse(gameList);  // Parse the gameList string
+    // Upload images to Cloudinary and collect URLs
+    const images = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        try {
+          const result = await cloudinary.uploader.upload(file.path, {
+            folder: "hunting-website/farms",
+            resource_type: "auto",
+          });
+          images.push(result.secure_url);
+        } catch (error) {
+          console.error("Error uploading to Cloudinary:", error);
+          return res.status(500).send("Error uploading images");
+        }
+      }
+    }
+    const parsedGameList = JSON.parse(gameList); // Parse the gameList string
     const gps = gpsCoordinates ? JSON.parse(gpsCoordinates) : null;
 
     // Step 1: Insert Farm Data
@@ -277,7 +294,7 @@ exports.addFarm = async (req, res) => {
     // Step 2: Handle Game Species (Deer) and Pricing
     for (const game of parsedGameList) {
       const gameSpecies = game.species; // Assuming game object has species, malePrice, and femalePrice
-      const checkDeerQuery = 'SELECT dId FROM Deer WHERE dTipe = $1 LIMIT 1;';
+      const checkDeerQuery = "SELECT dId FROM Deer WHERE dTipe = $1 LIMIT 1;";
       const checkDeerRes = await pool.query(checkDeerQuery, [gameSpecies]);
 
       let did;
@@ -285,7 +302,8 @@ exports.addFarm = async (req, res) => {
       if (checkDeerRes.rows.length > 0) {
         did = checkDeerRes.rows[0].did;
       } else {
-        const insertDeerQuery = 'INSERT INTO Deer (dTipe) VALUES ($1) RETURNING did;';
+        const insertDeerQuery =
+          "INSERT INTO Deer (dTipe) VALUES ($1) RETURNING did;";
         const insertDeerRes = await pool.query(insertDeerQuery, [gameSpecies]);
         did = insertDeerRes.rows[0].did;
       }
@@ -302,39 +320,24 @@ exports.addFarm = async (req, res) => {
       ]);
     }
 
-    // Step 3: Insert Image Paths into FarmsImage Table
-    for (const imagePath of images) {
-      // Get the file name from the image path
-      const fileName = path.basename(imagePath);
-      
-      // Step 3a: Insert Image Data into Database (imageId, fId, imagePath)
+    // Step 3: Insert Cloudinary URLs into FarmsImage Table
+    for (const imageUrl of images) {
       const insertImageQuery = `
         INSERT INTO FarmsImage (fId, fImagePath)
         VALUES ($1, $2) RETURNING fImageId;
       `;
-      const insertImageRes = await pool.query(insertImageQuery, [farmId, fileName]);
-      const imageId = insertImageRes.rows[0].fimageid;
-
-      // Step 3b: Save image to the 'uploads' folder
-      const image = req.files.find(file => file.path === imagePath);
-      if (image) {
-        const imageData = fs.readFileSync(image.path); // Read binary data from the file
-        const imagePathInUploadDir = path.join(__dirname, fileName);
-        
-        // Save the file to the 'uploads' directory (in case it’s not done automatically)
-        fs.writeFileSync(imagePathInUploadDir, imageData);
-      }
+      await pool.query(insertImageQuery, [farmId, imageUrl]);
     }
 
-    res.status(200).json({ message: 'Farm added successfully!' });
+    res.status(200).json({ message: "Farm added successfully!" });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Error adding farm data');
+    res.status(500).send("Error adding farm data");
   }
 };
 
 exports.updateFarmDetails = async (req, res) => {
-    const farmId = req.params.fId;
+  const farmId = req.params.fId;
   try {
     let {
       name,
@@ -350,7 +353,7 @@ exports.updateFarmDetails = async (req, res) => {
       gpsCoordinates,
       amenities,
       userId,
-      keepImages
+      keepImages,
     } = req.body;
 
     // Parse keepImages safely (should be an array of filenames)
@@ -365,8 +368,22 @@ exports.updateFarmDetails = async (req, res) => {
     const parsedGameList = gameList ? JSON.parse(gameList) : [];
     const gps = gpsCoordinates ? JSON.parse(gpsCoordinates) : null;
 
-    // multer stored files on disk -> keep only filenames
-    const newUploadedImages = (req.files || []).map(file => path.basename(file.path));
+    // Upload new images to Cloudinary
+    const newUploadedImages = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        try {
+          const result = await cloudinary.uploader.upload(file.path, {
+            folder: "hunting-website/farms",
+            resource_type: "auto",
+          });
+          newUploadedImages.push(result.secure_url);
+        } catch (error) {
+          console.error("Error uploading to Cloudinary:", error);
+          return res.status(500).send("Error uploading images");
+        }
+      }
+    }
 
     // --- Update Farm core info ---
     const updateFarmQuery = `
@@ -404,12 +421,12 @@ exports.updateFarmDetails = async (req, res) => {
     ];
 
     const farmRes = await pool.query(updateFarmQuery, farmValues);
-    if (farmRes.rowCount === 0) return res.status(404).send('Farm not found');
+    if (farmRes.rowCount === 0) return res.status(404).send("Farm not found");
 
     // --- Upsert pricing per species ---
     for (const game of parsedGameList) {
       const gameSpecies = game.species;
-      const checkDeerQuery = 'SELECT dId FROM Deer WHERE dTipe = $1 LIMIT 1;';
+      const checkDeerQuery = "SELECT dId FROM Deer WHERE dTipe = $1 LIMIT 1;";
       const checkDeerRes = await pool.query(checkDeerQuery, [gameSpecies]);
 
       let dId;
@@ -428,7 +445,7 @@ exports.updateFarmDetails = async (req, res) => {
         ]);
       } else {
         const insertDeerQuery =
-          'INSERT INTO Deer (dTipe) VALUES ($1) RETURNING dId;';
+          "INSERT INTO Deer (dTipe) VALUES ($1) RETURNING dId;";
         const insertDeerRes = await pool.query(insertDeerQuery, [gameSpecies]);
         dId = insertDeerRes.rows[0].did || insertDeerRes.rows[0].dId;
         const insertGameQuery = `
@@ -450,12 +467,30 @@ exports.updateFarmDetails = async (req, res) => {
       `SELECT fImagePath FROM FarmsImage WHERE fId = $1`,
       [farmId]
     );
-    const existingImages = existingRes.rows.map(r => r.fimagepath);
+    const existingImages = existingRes.rows.map((r) => r.fimagepath);
 
     // 2. Find images to delete (in DB but not in keepImages)
-    const toDelete = existingImages.filter(img => !parsedKeepImages.includes(img));
+    const toDelete = existingImages.filter(
+      (img) => !parsedKeepImages.includes(img)
+    );
 
     if (toDelete.length > 0) {
+      // Delete from Cloudinary first
+      for (const imageUrl of toDelete) {
+        try {
+          // Extract public_id from Cloudinary URL
+          const publicId = imageUrl
+            .split("/")
+            .slice(-2)
+            .join("/")
+            .split(".")[0];
+          await cloudinary.uploader.destroy(publicId);
+        } catch (error) {
+          console.error("Error deleting from Cloudinary:", error);
+        }
+      }
+
+      // Then delete from database
       await pool.query(
         `DELETE FROM FarmsImage WHERE fId = $1 AND fImagePath = ANY($2::text[])`,
         [farmId, toDelete]
@@ -463,22 +498,22 @@ exports.updateFarmDetails = async (req, res) => {
     }
 
     // 3. Insert any newly uploaded images
-    for (const fileName of newUploadedImages) {
+    for (const imageUrl of newUploadedImages) {
       await pool.query(
         `INSERT INTO FarmsImage (fId, fImagePath) VALUES ($1, $2)`,
-        [farmId, fileName]
+        [farmId, imageUrl]
       );
     }
 
-    res.status(200).json({ message: 'Farm updated successfully!' });
+    res.status(200).json({ message: "Farm updated successfully!" });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error updating farm data');
+    res.status(500).send("Error updating farm data");
   }
 };
 
 exports.deleteFarm = async (req, res) => {
-    const farmId = req.params.fId;
+  const farmId = req.params.fId;
 
   try {
     // Step 1: fetch farm images (so we can remove files from disk)
@@ -486,42 +521,47 @@ exports.deleteFarm = async (req, res) => {
       `SELECT fImagePath FROM FarmsImage WHERE fId = $1`,
       [farmId]
     );
-    const images = imagesRes.rows.map(r => r.fimagepath);
+    const images = imagesRes.rows.map((r) => r.fimagepath);
 
     // Step 2: delete the farm (cascades to FarmsImage, FarmsDeer, Review)
     const deleteFarmQuery = `DELETE FROM Farms WHERE fId = $1 RETURNING fId;`;
     const deleteRes = await pool.query(deleteFarmQuery, [farmId]);
 
     if (deleteRes.rowCount === 0) {
-      return res.status(404).json({ message: 'Farm not found' });
+      return res.status(404).json({ message: "Farm not found" });
     }
 
-    // Step 3: delete files from /uploads folder
-    for (const img of images) {
-      const imgPath = path.join(__dirname, 'uploads', img);
-      fs.unlink(imgPath, err => {
-        if (err && err.code !== 'ENOENT') {
-          console.error(`Failed to delete file ${imgPath}:`, err);
-        }
-      });
+    // Step 3: delete files from Cloudinary
+    for (const imageUrl of images) {
+      try {
+        // Extract public_id from Cloudinary URL
+        const publicId = imageUrl.split("/").slice(-2).join("/").split(".")[0];
+        await cloudinary.uploader.destroy(publicId);
+      } catch (error) {
+        console.error("Error deleting from Cloudinary:", error);
+      }
     }
 
-    res.status(200).json({ message: 'Farm and related data deleted successfully' });
+    res
+      .status(200)
+      .json({ message: "Farm and related data deleted successfully" });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error deleting farm');
+    res.status(500).send("Error deleting farm");
   }
 };
 
 exports.addReview = async (req, res) => {
-    const farmId = req.params.fid;
+  const farmId = req.params.fid;
   const { userId, rating, comment } = req.body;
 
   try {
     // Step 1: Check if the farm exists
-    const farmRes = await pool.query(`SELECT * FROM Farms WHERE fId = $1`, [farmId]);
+    const farmRes = await pool.query(`SELECT * FROM Farms WHERE fId = $1`, [
+      farmId,
+    ]);
     if (farmRes.rowCount === 0) {
-      return res.status(404).json({ message: 'Farm not found' });
+      return res.status(404).json({ message: "Farm not found" });
     }
 
     // Step 2: Insert the review
@@ -530,11 +570,19 @@ exports.addReview = async (req, res) => {
       VALUES ($1, $2, $3, $4)
       RETURNING *;
     `;
-    const reviewRes = await pool.query(reviewQuery, [farmId, userId, rating, comment]);
+    const reviewRes = await pool.query(reviewQuery, [
+      farmId,
+      userId,
+      rating,
+      comment,
+    ]);
 
-    res.status(201).json({ message: 'Review added successfully', review: reviewRes.rows[0] });
+    res.status(201).json({
+      message: "Review added successfully",
+      review: reviewRes.rows[0],
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error adding review');
+    res.status(500).send("Error adding review");
   }
 };

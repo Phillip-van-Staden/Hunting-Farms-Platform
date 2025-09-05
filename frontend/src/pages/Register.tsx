@@ -241,8 +241,8 @@ export const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
                       <input
                         type="radio"
                         name="userType"
-                        value="farm_owner"
-                        checked={formData.userType === "farm_owner"}
+                        value="Farmer"
+                        checked={formData.userType === "Farmer"}
                         onChange={handleInputChange}
                         className="sr-only"
                       />

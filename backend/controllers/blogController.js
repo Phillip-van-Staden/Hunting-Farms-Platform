@@ -1,10 +1,9 @@
-const pool = require('../db');
-const path = require('path');
-const fs = require('fs');
+const pool = require("../db");
+const cloudinary = require("../cloudinary");
 
 // Get all blogs
 exports.getAllBlogs = async (req, res) => {
- try {
+  try {
     const result = await pool.query("SELECT * FROM Blogs ORDER BY bDate DESC");
     res.json(result.rows);
   } catch (err) {
@@ -37,12 +36,15 @@ exports.getApprovedBlogs = async (req, res) => {
 exports.getBlogDetails = async (req, res) => {
   const { bid } = req.params;
   try {
-    const result = await pool.query(`   SELECT 
+    const result = await pool.query(
+      `   SELECT 
          b.*, 
          p."pnaam" || ' ' || p."pvan" AS author
        FROM Blogs b
        JOIN Person p ON b."pid" = p."pid"
-       WHERE bId = $1`, [bid]);
+       WHERE bId = $1`,
+      [bid]
+    );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Blog not found" });
     }
@@ -66,13 +68,40 @@ exports.addBlog = async (req, res) => {
       bStatusMessage,
     } = req.body;
 
-    // image handling
-    const imagePath = req.file ? `/uploads/blogs/${req.file.filename}` : null;
+    // image handling - upload to Cloudinary
+    let imagePath = null;
+    if (req.file) {
+      try {
+        const result = await new Promise((resolve, reject) => {
+          cloudinary.uploader
+            .upload_stream(
+              {
+                folder: "hunting-website/blogs",
+                resource_type: "auto",
+              },
+              (error, result) => {
+                if (error) {
+                  reject(error);
+                } else {
+                  resolve(result);
+                }
+              }
+            )
+            .end(req.file.buffer);
+        });
+        imagePath = result.secure_url;
+      } catch (error) {
+        console.error("Error uploading to Cloudinary:", error);
+        return res.status(500).json({ error: "Error uploading image" });
+      }
+    }
 
     // tags handling (expecting array or comma-separated string)
     let tagsArray = [];
     if (bTags) {
-      tagsArray = Array.isArray(bTags) ? bTags : bTags.split(",").map(t => t.trim());
+      tagsArray = Array.isArray(bTags)
+        ? bTags
+        : bTags.split(",").map((t) => t.trim());
     }
 
     const result = await pool.query(
@@ -118,18 +147,54 @@ exports.updateBlog = async (req, res) => {
     // handle tags
     let tagsArray = [];
     if (bTags) {
-      tagsArray = Array.isArray(bTags) ? bTags : bTags.split(",").map(t => t.trim());
+      tagsArray = Array.isArray(bTags)
+        ? bTags
+        : bTags.split(",").map((t) => t.trim());
     }
 
     let imagePath = null;
     if (req.file) {
-      imagePath = `/uploads/blogs/${req.file.filename}`;
+      try {
+        // Upload new image to Cloudinary
+        const result = await new Promise((resolve, reject) => {
+          cloudinary.uploader
+            .upload_stream(
+              {
+                folder: "hunting-website/blogs",
+                resource_type: "auto",
+              },
+              (error, result) => {
+                if (error) {
+                  reject(error);
+                } else {
+                  resolve(result);
+                }
+              }
+            )
+            .end(req.file.buffer);
+        });
+        imagePath = result.secure_url;
 
-      // delete old image if it exists
-      const old = await pool.query("SELECT bImage FROM Blogs WHERE bId=$1", [id]);
-      if (old.rows.length > 0 && old.rows[0].bimage) {
-        const oldPath = path.join(__dirname, "..", old.rows[0].bimage);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+        // Delete old image from Cloudinary if it exists
+        const old = await pool.query("SELECT bImage FROM Blogs WHERE bId=$1", [
+          id,
+        ]);
+        if (old.rows.length > 0 && old.rows[0].bimage) {
+          try {
+            // Extract public_id from Cloudinary URL
+            const publicId = old.rows[0].bimage
+              .split("/")
+              .slice(-2)
+              .join("/")
+              .split(".")[0];
+            await cloudinary.uploader.destroy(publicId);
+          } catch (error) {
+            console.error("Error deleting old image from Cloudinary:", error);
+          }
+        }
+      } catch (error) {
+        console.error("Error uploading to Cloudinary:", error);
+        return res.status(500).json({ error: "Error uploading image" });
       }
     }
 
@@ -174,17 +239,29 @@ exports.updateBlog = async (req, res) => {
 
 // Delete a blog
 exports.deleteBlog = async (req, res) => {
- try {
+  try {
     const { id } = req.params;
 
-    // delete image from filesystem first
+    // delete image from Cloudinary first
     const old = await pool.query("SELECT bImage FROM Blogs WHERE bId=$1", [id]);
     if (old.rows.length > 0 && old.rows[0].bimage) {
-      const oldPath = path.join(__dirname, "..", old.rows[0].bimage);
-      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      try {
+        // Extract public_id from Cloudinary URL
+        const publicId = old.rows[0].bimage
+          .split("/")
+          .slice(-2)
+          .join("/")
+          .split(".")[0];
+        await cloudinary.uploader.destroy(publicId);
+      } catch (error) {
+        console.error("Error deleting image from Cloudinary:", error);
+      }
     }
 
-    const result = await pool.query("DELETE FROM Blogs WHERE bId=$1 RETURNING *", [id]);
+    const result = await pool.query(
+      "DELETE FROM Blogs WHERE bId=$1 RETURNING *",
+      [id]
+    );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Blog not found" });
     }
@@ -195,5 +272,3 @@ exports.deleteBlog = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
-
-

@@ -56,25 +56,25 @@ interface Farm {
   reviewCount: number;
 }
 
-function ImageWithFallback({
-  src,
-  fallbackSrc = "https://via.placeholder.com/800x600?text=No+Image",
-  alt,
-  ...props
-}: React.ImgHTMLAttributes<HTMLImageElement> & { fallbackSrc?: string }) {
-  const [imgSrc, setImgSrc] = useState(src);
-  useEffect(() => {
-    setImgSrc(src);
-  }, [src]);
-  return (
-    <img
-      src={imgSrc}
-      alt={alt}
-      onError={() => setImgSrc(fallbackSrc)}
-      {...props}
-    />
-  );
-}
+// function ImageWithFallback({
+//   src,
+//   fallbackSrc = "https://via.placeholder.com/800x600?text=No+Image",
+//   alt,
+//   ...props
+// }: React.ImgHTMLAttributes<HTMLImageElement> & { fallbackSrc?: string }) {
+//   const [imgSrc, setImgSrc] = useState(src);
+//   useEffect(() => {
+//     setImgSrc(src);
+//   }, [src]);
+//   return (
+//     <img
+//       src={imgSrc}
+//       alt={alt}
+//       onError={() => setImgSrc(fallbackSrc)}
+//       {...props}
+//     />
+//   );
+// }
 
 interface FarmDetailsProps {
   user: User | null;
@@ -226,8 +226,8 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
           <div className="md:flex-1 space-y-6">
             <div className="bg-white rounded-lg shadow p-4">
               <div className="relative">
-                <ImageWithFallback
-                  src={`${API_URL}/uploads/${farmData.images[selectedImageIndex]}`}
+                <img
+                  src={`${farmData.images[selectedImageIndex]}`}
                   alt={`${farmData.name} image ${selectedImageIndex + 1}`}
                   className="w-full h-96 object-cover rounded"
                 />
@@ -251,8 +251,8 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
                         : "border-gray-200"
                     }`}
                   >
-                    <ImageWithFallback
-                      src={`${API_URL}/uploads/${img}`}
+                    <img
+                      src={`${img}`}
                       alt={`${farmData.name} ${idx + 1}`}
                       className="w-full h-full object-cover"
                     />
@@ -478,8 +478,8 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
             <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               {farmData.images.map((img: string, idx: number) => (
                 <div key={idx} className="rounded overflow-hidden">
-                  <ImageWithFallback
-                    src={`${API_URL}/uploads/${img}`}
+                  <img
+                    src={`${img}`}
                     alt={`gallery-${idx}`}
                     className="w-full h-64 object-cover"
                   />

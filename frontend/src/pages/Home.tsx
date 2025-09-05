@@ -57,7 +57,8 @@ const Home: React.FC = () => {
       try {
         const res = await fetch(`${API_URL}/farms/`);
         const data: Farm[] = await res.json();
-        setFeaturedFarms(data.slice(0, 3)); // take only first 3
+        const shuffledFarms = data.sort(() => Math.random() - 0.5);
+        setFeaturedFarms(shuffledFarms.slice(0, 3)); // take only first 3
       } catch (err) {
         console.error("Error fetching farms:", err);
       }
@@ -193,9 +194,7 @@ const Home: React.FC = () => {
                 className="bg-white rounded-lg shadow-md overflow-hidden"
               >
                 <img
-                  src={`${API_URL}/uploads/${
-                    farm.images ? farm.images[0] : "default-farm.jpg"
-                  }`}
+                  src={`${farm.images ? farm.images[0] : "default-farm.jpg"}`}
                   alt={farm.name}
                   className="h-48 w-full object-cover"
                 />
@@ -244,7 +243,7 @@ const Home: React.FC = () => {
                 className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col"
               >
                 <img
-                  src={`${API_URL}${
+                  src={`${
                     insight.bimage || "https://via.placeholder.com/400x200"
                   }`}
                   alt={insight.btitle}
