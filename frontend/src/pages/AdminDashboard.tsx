@@ -229,7 +229,9 @@ const AdminDashboard: React.FC = () => {
       <div className="px-6 py-4 border-b">
         <h3 className="text-xl font-bold text-brown">Farm Management</h3>
       </div>
-      <div className="overflow-x-auto">
+
+      {/* Desktop / Tablet Table */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
@@ -270,6 +272,7 @@ const AdminDashboard: React.FC = () => {
                         className="text-blue-600 hover:text-blue-900"
                       >
                         <Eye className="w-4 h-4" />
+                        <span>View</span>
                       </button>
                     </div>
                   </td>
@@ -278,6 +281,38 @@ const AdminDashboard: React.FC = () => {
             })}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Card Layout */}
+      <div className="md:hidden">
+        <ul className="divide-y divide-gray-200">
+          {farms.map((farm) => {
+            const fid = idOf(farm, "fid", "fId", "id");
+            const name =
+              farm.fname ??
+              farm.fName ??
+              farm.fName ??
+              farm.name ??
+              farm.f_name ??
+              "-";
+            const owner = farm.owner ?? farm.Owner ?? "-";
+            return (
+              <li key={fid ?? name} className="p-4 flex flex-col space-y-2">
+                <div className="text-sm font-medium text-gray-900">{name}</div>
+                <div className="text-sm text-gray-500">Owner: {owner}</div>
+                <div>
+                  <button
+                    onClick={() => navigate(`/owner/farms/${fid}`)}
+                    className="text-blue-600 hover:text-blue-900 text-sm flex items-center space-x-1"
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span>View</span>
+                  </button>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );
@@ -289,7 +324,8 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Desktop / Tablet Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
@@ -345,16 +381,18 @@ const AdminDashboard: React.FC = () => {
                       <div className="flex space-x-2">
                         <button
                           onClick={() => navigate(`/blogs/${bid}`)}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="text-blue-600 hover:text-blue-900 px-2"
                         >
                           <Eye className="w-4 h-4" />
+                          <span>View</span>
                         </button>
                         {status.toLowerCase() === "pending" && (
                           <button
                             onClick={() => handleApproveBlog(blog)}
-                            className="text-green-600 hover:text-green-900"
+                            className="text-green-600 hover:text-green-900 px-2"
                           >
                             <CheckCircle className="w-4 h-4" />
+                            <span>Approve</span>
                           </button>
                         )}
                         <button
@@ -362,6 +400,7 @@ const AdminDashboard: React.FC = () => {
                           className="text-red-600 hover:text-red-900"
                         >
                           <Trash2 className="w-4 h-4" />
+                          <span>Delete</span>
                         </button>
                       </div>
                     </td>
@@ -370,6 +409,71 @@ const AdminDashboard: React.FC = () => {
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card Layout */}
+        <div className="md:hidden">
+          <ul className="divide-y divide-gray-200">
+            {blogs.map((blog) => {
+              const bid = idOf(blog, "bid", "id", "bId");
+              const title = blog.btitle ?? blog.bTitle ?? blog.title ?? "-";
+              const author = blog.author ?? blog.author_name ?? "-";
+              const status = (
+                blog.bstatus ??
+                blog.bStatus ??
+                blog.status ??
+                ""
+              ).toString();
+
+              return (
+                <li key={bid ?? title} className="p-4 flex flex-col space-y-2">
+                  <div className="text-sm font-medium text-gray-900">
+                    {title}
+                  </div>
+                  <div className="text-sm text-gray-500">By {author}</div>
+                  <div>
+                    <span
+                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        status.toLowerCase() === "approved" ||
+                        status.toLowerCase() === "approve"
+                          ? "bg-green-100 text-green-800"
+                          : status.toLowerCase() === "pending"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {status}
+                    </span>
+                  </div>
+                  <div className="flex space-x-3 pt-2">
+                    <button
+                      onClick={() => navigate(`/blogs/${bid}`)}
+                      className="text-blue-600 hover:text-blue-900 text-sm flex items-center space-x-1"
+                    >
+                      <Eye className="w-4 h-4" />
+                      <span>View</span>
+                    </button>
+                    {status.toLowerCase() === "pending" && (
+                      <button
+                        onClick={() => handleApproveBlog(blog)}
+                        className="text-green-600 hover:text-green-900 text-sm flex items-center space-x-1"
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                        <span>Approve</span>
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDeleteBlog(blog)}
+                      className="text-red-600 hover:text-red-900 text-sm flex items-center space-x-1"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </div>
     </div>
@@ -380,7 +484,9 @@ const AdminDashboard: React.FC = () => {
       <div className="px-6 py-4 border-b">
         <h3 className="text-xl font-bold text-brown">User Management</h3>
       </div>
-      <div className="overflow-x-auto">
+
+      {/* Desktop / Tablet Table */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
@@ -453,25 +559,30 @@ const AdminDashboard: React.FC = () => {
                             state: { user },
                           })
                         }
-                        className="text-blue-600 hover:text-blue-900"
+                        className="text-blue-600 hover:text-blue-900 px-2"
                       >
                         <Eye className="w-4 h-4" />
+                        <span>View</span>
                       </button>
-                      {blocked ? (
-                        <button
-                          onClick={() => handleBanUser(uid)}
-                          className="text-green-600 hover:text-green-900"
-                        >
-                          <CheckCircle className="w-4 h-4" />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleBanUser(uid)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
+                      {!user.padmin ? (
+                        blocked ? (
+                          <button
+                            onClick={() => handleBanUser(uid)}
+                            className="text-green-600 hover:text-green-900"
+                          >
+                            <CheckCircle className="w-4 h-4" />
+                            <span>Unban</span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleBanUser(uid)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            <span>Ban</span>
+                          </button>
+                        )
+                      ) : null}
                     </div>
                   </td>
                 </tr>
@@ -479,6 +590,77 @@ const AdminDashboard: React.FC = () => {
             })}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Card Layout */}
+      <div className="md:hidden">
+        <ul className="divide-y divide-gray-200">
+          {users.map((user) => {
+            const uid = idOf(user, "pid", "id", "pId", "_id");
+            const name = user.user ?? user.name ?? user.pnaam ?? "-";
+            const email = user.email ?? user.pemail ?? "-";
+            const type = user.pcategory ?? user.type ?? "-";
+            const blocked = Boolean(
+              user.pblocked ||
+                user.pBlocked ||
+                user.pblocked === true ||
+                user.pblocked === "t"
+            );
+            const reviews = Number(
+              user.total_reviews ?? user.totalReviews ?? 0
+            );
+
+            return (
+              <li key={uid ?? email} className="p-4 flex flex-col space-y-2">
+                <div className="text-sm font-medium text-gray-900">{name}</div>
+                <div className="text-sm text-gray-500">{email}</div>
+                <div className="text-xs text-gray-500">Type: {type}</div>
+                <div>
+                  <span
+                    className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                      blocked
+                        ? "bg-red-100 text-red-800"
+                        : "bg-green-100 text-green-800"
+                    }`}
+                  >
+                    {blocked ? "banned" : "active"}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500">Reviews: {reviews}</div>
+                <div className="flex space-x-3 pt-2">
+                  <button
+                    onClick={() =>
+                      navigate(`/admin/users/${uid}/reviews`, {
+                        state: { user },
+                      })
+                    }
+                    className="text-blue-600 hover:text-blue-900 text-sm flex items-center space-x-1"
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span>View</span>
+                  </button>
+                  {blocked ? (
+                    <button
+                      onClick={() => handleBanUser(uid)}
+                      className="text-green-600 hover:text-green-900 text-sm flex items-center space-x-1"
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                      <span>Unban</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleBanUser(uid)}
+                      className="text-red-600 hover:text-red-900 text-sm flex items-center space-x-1"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Ban</span>
+                    </button>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );
@@ -503,7 +685,7 @@ const AdminDashboard: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <nav className="flex space-x-2 bg-white rounded-xl shadow-lg p-2">
+          <nav className="flex flex-wrap gap-2 bg-white rounded-xl shadow-lg p-2">
             {[
               {
                 key: "overview",
@@ -533,14 +715,14 @@ const AdminDashboard: React.FC = () => {
               <button
                 key={key}
                 onClick={() => setActiveTab(key as any)}
-                className={`flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                className={`flex items-center px-4 py-2 rounded-lg font-semibold transition-all duration-200 w-full sm:w-auto ${
                   activeTab === key
                     ? "bg-green-500 text-white shadow-md transform scale-105"
                     : `text-gray-600 hover:text-brown hover:bg-gray-50 ${color}`
                 }`}
               >
-                <Icon className="w-5 h-5 mr-3" />
-                {label}
+                <Icon className="w-5 h-5 mr-2" />
+                <span className="text-sm sm:text-base">{label}</span>
               </button>
             ))}
           </nav>

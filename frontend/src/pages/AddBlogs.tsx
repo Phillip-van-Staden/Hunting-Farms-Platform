@@ -24,6 +24,7 @@ export function AddBlogs({ user }: { user: User | null }) {
   const [newTag, setNewTag] = useState("");
   const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
   const [featuredImagePreview, setFeaturedImagePreview] = useState<string>("");
+  const [storing, setStoring] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const userCategories = [
@@ -115,6 +116,7 @@ export function AddBlogs({ user }: { user: User | null }) {
     }
 
     try {
+      setStoring(true);
       const formData = new FormData();
       formData.append("bTitle", blogData.title);
       formData.append("bDescription", blogData.excerpt);
@@ -133,6 +135,7 @@ export function AddBlogs({ user }: { user: User | null }) {
       });
 
       console.log("Blog created:", res.data);
+      setStoring(false);
       alert("Blog submitted successfully! Pending approval.");
       navigate("/blog"); // redirect after submit
     } catch (err) {
@@ -144,6 +147,31 @@ export function AddBlogs({ user }: { user: User | null }) {
   return (
     <div className="min-h-screen bg-beige">
       {/* Page Header */}
+      {storing && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black bg-opacity-50">
+          <svg
+            className="animate-spin h-10 w-10 text-white mb-3"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v8z"
+            ></path>
+          </svg>
+          <p className="text-white font-medium">Storing blog details...</p>
+        </div>
+      )}
       <div className="mb-6 bg-black text-center p-4">
         <h1 className="text-3xl font-bold text-white">Create new blog post</h1>
       </div>

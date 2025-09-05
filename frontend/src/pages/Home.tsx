@@ -134,6 +134,14 @@ const Home: React.FC = () => {
 
     fetchStats();
   }, []);
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
   return (
     <div className="min-h-screen bg-beige">
       {/* Hero */}
@@ -250,7 +258,9 @@ const Home: React.FC = () => {
                   className="h-48 w-full object-cover"
                 />
                 <div className="p-4 flex-1 flex flex-col">
-                  <span className="text-sm text-gray-500">{insight.bdate}</span>
+                  <span className="text-sm text-gray-500">
+                    {formatDate(insight.bdate)}
+                  </span>
                   <h3 className="text-xl font-semibold mt-2">
                     {insight.btitle}
                   </h3>

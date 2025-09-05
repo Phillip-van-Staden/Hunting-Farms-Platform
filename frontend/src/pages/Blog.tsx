@@ -107,19 +107,119 @@ export function BlogScreen({ user }: BlogScreenProps) {
 
   return (
     <div className="min-h-screen bg-beige">
-      <div className="w-full px-6 lg:px-12 py-16">
+      <div className="w-full ">
         {/* Page Header */}
-        <div className="bg-white rounded-3xl shadow-2xl p-12 mb-20">
-          <div className="text-center mb-20">
-            <h1 className="text-brown mb-8 text-6xl">
+        <div className="bg-black  shadow-2xl p-4 mb-5">
+          <div className="text-center mb-2">
+            <h1 className="text-white mb-8 text-4xl">
               Hunting & Conservation Blog
             </h1>
-            <p className="text-2xl text-gray-600 max-w-5xl mx-auto leading-relaxed">
+            <p className="text-md lg:text-xl text-gray-100 max-w-5xl mx-auto leading-relaxed">
               Expert insights, hunting tips, conservation stories, and
               destination guides from South Africa's premier hunting community
             </p>
           </div>
+        </div>
 
+        {/* Featured Post */}
+        {featuredPost && (
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-12 sm:mb-16 lg:mb-10">
+            <div className="lg:flex">
+              {featuredPost.bimage && (
+                <div className="lg:w-1/2">
+                  <img
+                    src={featuredPost.bimage}
+                    alt={featuredPost.btitle}
+                    className="w-full h-48 sm:h-64 md:h-72 lg:h-102 object-cover"
+                  />
+                </div>
+              )}
+              <div className="lg:w-1/2 p-6 sm:p-8 md:p-10 lg:p-6">
+                {/* Category + Featured tags */}
+                <div className="flex flex-wrap items-center text-sm sm:text-base text-gray-500 mb-4 sm:mb-6 lg:mb-2 space-x-3 sm:space-x-4">
+                  <span className="bg-green-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-semibold sm:font-bold text-sm sm:text-lg">
+                    FEATURED
+                  </span>
+                  <span className="bg-gray-100 text-gray-700 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium sm:font-semibold text-sm sm:text-lg">
+                    {getCategoryName(featuredPost.bcategory)}
+                  </span>
+                </div>
+
+                {/* Title */}
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-brown mb-4 sm:mb-6 lg:mb-8 leading-snug sm:leading-tight">
+                  {featuredPost.btitle}
+                </h2>
+
+                {/* Description */}
+                <p className="text-gray-600 mb-6 sm:mb-8 lg:mb-10 leading-relaxed text-sm sm:text-base md:text-lg">
+                  {featuredPost.bdescription}
+                </p>
+
+                {/* Author + Date + Button */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+                  <div className="flex items-center text-sm sm:text-base text-gray-500 space-x-4 sm:space-x-6">
+                    <div className="flex items-center">
+                      <User className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3" />
+                      <span>{featuredPost.author || "Anonymous"}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3" />
+                      <span>{formatDate(featuredPost.bdate)}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => navigate(`/blogs/${featuredPost.bid}`)}
+                    className="flex items-center justify-center text-primary hover:text-green-500 font-semibold sm:font-bold transition-all bg-primary bg-opacity-10 px-4 py-2 sm:px-6 sm:py-3 lg:px-8 lg:py-4 rounded-lg sm:rounded-xl text-sm sm:text-base md:text-lg"
+                  >
+                    Read More
+                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ml-2 sm:ml-3" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Write a Story CTA */}
+        <div className="bg-[var(--earthy-green)] rounded-2xl shadow-xl p-6 sm:p-8 md:p-5 lg:p-6 mb-12 sm:mb-16 lg:mb-10 text-white">
+          <div className="text-center">
+            {/* Heading */}
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-5 lg:mb-6">
+              Share Your Hunting Story
+            </h2>
+
+            {/* Description */}
+            <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-7 lg:mb-8 opacity-90 max-w-xl sm:max-w-2xl lg:max-w-3xl mx-auto leading-relaxed">
+              Have an amazing hunting experience to share? Write about your
+              adventures, tips, and insights to inspire the community.
+            </p>
+
+            {/* Button */}
+            <button
+              onClick={() => {
+                if (!user) {
+                  navigate("/login");
+                } else {
+                  navigate("/blogs/add");
+                }
+              }}
+              className="bg-white text-black px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 rounded-lg sm:rounded-xl hover:bg-gray-300 transition-colors font-semibold sm:font-bold text-sm sm:text-base md:text-lg flex items-center mx-auto shadow-lg"
+            >
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 mr-2 sm:mr-3" />
+              Write Your Story
+            </button>
+
+            {/* Subtext */}
+            <p className="text-xs sm:text-sm mt-3 sm:mt-4 opacity-75">
+              {!user
+                ? "Please log in to share your story"
+                : "All community posts are reviewed before publishing"}
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-5 my-5 ">
           {/* Search and Categories */}
 
           <div className="max-w-4xl mx-auto mb-12">
@@ -130,7 +230,7 @@ export function BlogScreen({ user }: BlogScreenProps) {
                 placeholder="Search articles, topics, or tags..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:ring-opacity-20 focus:border-primary outline-none text-lg placeholder-gray-500"
+                className="w-full pl-12 pr-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:ring-opacity-20 focus:border-green-500 outline-none  placeholder-gray-500"
               />
             </div>
           </div>
@@ -151,147 +251,73 @@ export function BlogScreen({ user }: BlogScreenProps) {
             ))}
           </div>
         </div>
-
-        {/* Featured Post */}
-        {featuredPost && (
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-20">
-            <div className="lg:flex">
-              {featuredPost.bimage && (
-                <div className="lg:w-1/2">
-                  <img
-                    src={featuredPost.bimage}
-                    alt={featuredPost.btitle}
-                    className="w-full h-80 lg:h-full object-cover"
-                  />
-                </div>
-              )}
-              <div className="lg:w-1/2 p-12">
-                <div className="flex items-center text-lg text-gray-500 mb-8">
-                  <span className="bg-green-500 text-white px-6 py-3 rounded-xl font-bold mr-6 text-xl">
-                    FEATURED
-                  </span>
-                  <span className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-semibold text-xl">
-                    {getCategoryName(featuredPost.bcategory)}
-                  </span>
-                </div>
-                <h2 className="text-3xl font-bold text-brown mb-8 leading-tight">
-                  {featuredPost.btitle}
-                </h2>
-                <p className="text-gray-600 mb-10 leading-relaxed text-xl">
-                  {featuredPost.bdescription}
-                </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center text-lg text-gray-500 space-x-8">
-                    <div className="flex items-center">
-                      <User className="w-5 h-5 mr-3" />
-                      <span>{featuredPost.author || "Anonymous"}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Calendar className="w-5 h-5 mr-3" />
-                      <span>{formatDate(featuredPost.bdate)}</span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => navigate(`/blogs/${featuredPost.bid}`)}
-                    className="flex items-center text-primary hover:text-green-500 font-bold transition-all bg-primary bg-opacity-10 px-8 py-4 rounded-xl text-xl"
-                  >
-                    Read More
-                    <ChevronRight className="w-6 h-6 ml-3" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Write a Story CTA */}
-        <div className="bg-[var(--earthy-green)] rounded-3xl shadow-2xl p-12 mb-20 text-white">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold mb-6">
-              Share Your Hunting Story
-            </h2>
-            <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
-              Have an amazing hunting experience to share? Write about your
-              adventures, tips, and insights to inspire the community.
-            </p>
-            <button
-              onClick={() => {
-                if (!user) {
-                  navigate("/login");
-                } else {
-                  navigate("/blogs/add");
-                }
-              }}
-              className="bg-white text-black px-8 py-4 rounded-xl hover:bg-gray-300 transition-colors font-bold text-xl flex items-center mx-auto shadow-lg"
-            >
-              <Plus className="w-6 h-6 mr-3" />
-              Write Your Story
-            </button>
-            <p className="text-sm mt-4 opacity-75">
-              {!user
-                ? "Please log in to share your story"
-                : "All community posts are reviewed before publishing"}
-            </p>
-          </div>
-        </div>
-
         {/* Blog Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-2 ">
           {filteredPosts.length > 0 ? (
             filteredPosts.map((post) => (
               <article
                 key={post.bid}
-                className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all transform hover:scale-[1.03] duration-300"
+                className="bg-white rounded-2xl sm:rounded-3xl shadow-md sm:shadow-lg overflow-hidden hover:shadow-2xl transition-all transform hover:scale-[1.02] duration-300"
               >
                 {post.bimage && (
                   <div className="relative">
                     <img
                       src={post.bimage}
                       alt={post.btitle}
-                      className="w-full h-72 object-cover"
+                      className="w-full h-40 sm:h-52 md:h-56 lg:h-60 object-cover"
                     />
-                    <div className="absolute top-6 left-6">
-                      <span className="bg-white bg-opacity-95 backdrop-blur-sm text-gray-700 px-4 py-3 rounded-xl font-semibold shadow-lg text-lg">
+                    <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+                      <span className="bg-white bg-opacity-95 backdrop-blur-sm text-gray-700 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl font-medium sm:font-semibold shadow-md text-xs sm:text-sm md:text-base">
                         {getCategoryName(post.bcategory)}
                       </span>
                     </div>
                   </div>
                 )}
-                <div className="p-10">
-                  <h3 className="text-2xl font-bold text-brown mb-6 leading-tight line-clamp-2">
+
+                <div className="p-5 sm:p-6 md:p-6 lg:p-6">
+                  {/* Title */}
+                  <h3 className="text-lg sm:text-xl font-bold text-brown mb-3 sm:mb-4 leading-snug sm:leading-tight line-clamp-2">
                     {post.btitle}
                   </h3>
-                  <p className="text-gray-600 mb-8 line-clamp-3 leading-relaxed text-lg">
+
+                  {/* Description */}
+                  <p className="text-gray-600 mb-4 sm:mb-5 line-clamp-3 leading-relaxed text-sm sm:text-base">
                     {post.bdescription}
                   </p>
-                  <div className="flex flex-wrap gap-3 mb-8">
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-5">
                     {post.btags &&
                       post.btags.slice(0, 3).map((tag, idx) => (
                         <span
                           key={idx}
-                          className="inline-flex items-center text-sm text-gray-500 bg-gray-100 px-4 py-2 rounded-full font-medium"
+                          className="inline-flex items-center text-xs sm:text-sm text-gray-500 bg-gray-100 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full font-medium"
                         >
-                          <Tag className="w-4 h-4 mr-2" />
+                          <Tag className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                           {tag}
                         </span>
                       ))}
                   </div>
-                  <div className="flex items-center justify-between text-base text-gray-500 mb-8">
+
+                  {/* Author + Date */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm text-gray-500 mb-4 sm:mb-5 space-y-2 sm:space-y-0">
                     <div className="flex items-center">
-                      <User className="w-5 h-5 mr-2" />
+                      <User className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                       <span>{post.author || "Anonymous"}</span>
                     </div>
                     <div className="flex items-center">
-                      <Calendar className="w-5 h-5 mr-2" />
+                      <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                       <span>{formatDate(post.bdate)}</span>
                     </div>
                   </div>
+
+                  {/* Button */}
                   <button
                     onClick={() => navigate(`/blogs/${post.bid}`)}
-                    className="w-full flex items-center justify-center text-primary hover:text-green-500 font-bold transition-all py-4 border-3 border-primary rounded-xl hover:bg-primary text-lg"
+                    className="w-full flex items-center justify-center text-primary hover:text-green-500 font-semibold transition-all py-2.5 sm:py-3 border-2 border-primary rounded-lg sm:rounded-xl hover:bg-primary text-sm sm:text-base"
                   >
                     Read Article
-                    <ChevronRight className="w-6 h-6 ml-3" />
+                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 sm:ml-3" />
                   </button>
                 </div>
               </article>

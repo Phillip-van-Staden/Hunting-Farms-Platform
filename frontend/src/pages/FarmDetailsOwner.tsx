@@ -225,7 +225,6 @@ export default function FarmDetailsOwner() {
               className="flex items-center text-white hover:bg-green-500 transition-colors text-lg"
             >
               <ArrowLeft className="w-6 h-6 mr-3" />
-              Back
             </button>
             <h1 className="text-2xl font-bold text-white">{farmData.name}</h1>
             <div className="w-32" />
@@ -515,26 +514,29 @@ export default function FarmDetailsOwner() {
       <Footer />
 
       {showFullGallery && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-5xl w-full overflow-y-auto">
-            <div className="p-4 flex justify-between items-center">
-              <h4 className="font-semibold">{farmData.name} — Gallery</h4>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setShowFullGallery(false)}
-                  className="px-3 py-1 rounded bg-gray-200"
-                >
-                  Close
-                </button>
-              </div>
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center p-2 sm:p-4">
+          <div className="bg-white rounded-lg w-full max-w-full sm:max-w-5xl h-full sm:h-auto overflow-y-auto">
+            {/* Header */}
+            <div className="p-3 sm:p-4 flex justify-between items-center border-b">
+              <h4 className="font-semibold text-sm sm:text-base truncate">
+                {farmData.name} — Gallery
+              </h4>
+              <button
+                onClick={() => setShowFullGallery(false)}
+                className="px-2 py-1 sm:px-3 sm:py-1 rounded bg-gray-200 text-sm sm:text-base"
+              >
+                Close
+              </button>
             </div>
-            <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            {/* Gallery Grid */}
+            <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
               {farmData.images.map((img: string, idx: number) => (
                 <div key={idx} className="rounded overflow-hidden">
                   <ImageWithFallback
                     src={img}
                     alt={`gallery-${idx}`}
-                    className="w-full h-64 object-cover"
+                    className="w-full h-48 sm:h-64 object-cover"
                   />
                 </div>
               ))}

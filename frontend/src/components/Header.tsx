@@ -24,31 +24,31 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
     <>
       <Link
         to="/"
-        className="hover:text-green-500 transition-all duration-300 px-6"
+        className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
       >
         Home
       </Link>
       <Link
         to="/farms"
-        className="hover:text-green-500 transition-all duration-300 px-6"
+        className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
       >
         Farms
       </Link>
       <Link
         to="/blog"
-        className="hover:text-green-500 transition-all duration-300 px-6"
+        className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
       >
         Blog
       </Link>
       <Link
         to="/about"
-        className="hover:text-green-500 transition-all duration-300 px-6"
+        className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
       >
         About Us
       </Link>
       <Link
         to="/help"
-        className="hover:text-green-500 transition-all duration-300 px-6"
+        className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
       >
         Help
       </Link>
@@ -57,7 +57,7 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
       {user?.category === "Farmer" && (
         <Link
           to="/OwnerDashboard"
-          className="hover:text-green-500 transition-all duration-300 px-6"
+          className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
         >
           Farm Dashboard
         </Link>
@@ -65,7 +65,7 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
       {user?.admin && (
         <Link
           to="/admin"
-          className="hover:text-green-500 transition-all duration-300 px-6"
+          className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
         >
           Admin
         </Link>
@@ -90,11 +90,11 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
             className="w-10 h-10 rounded-full border border-[var(--sandy-beige)]"
           />
           <div className="px-2" />
-          <span className="text-xl font-bold">Hunter's Haven</span>
+          <span className="text-xl  md:text-sm font-bold">Hunter's Haven</span>
         </div>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex space-x-6">{navLinks}</nav>
+        <nav className="hidden md:flex  space-x-6">{navLinks}</nav>
 
         {/* Right Section (Desktop) */}
         <div className="hidden md:flex items-center space-x-4">
@@ -102,14 +102,14 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
             <>
               <Link
                 to="/login"
-                className="bg-green-500 px-3 py-1 rounded hover:bg-green-400 transition"
+                className="bg-green-500 px-3 py-1 rounded hover:bg-green-400 transition md:px-2 md:text-sm"
               >
                 Login
               </Link>
               <div className="px-2" />
               <Link
                 to="/register"
-                className="border border-white px-3 py-1 rounded hover:bg-[var(--olive-green)] transition"
+                className="border border-white px-3 py-1 rounded hover:bg-[var(--olive-green)] transition md:px-2 md:text-sm"
               >
                 Sign Up
               </Link>
@@ -117,12 +117,12 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
           ) : (
             <div className="flex items-center space-x-4">
               <div
-                className="border border-white px-3 py-1 rounded hover:bg-green-500 transition cursor-pointer"
+                className="border border-white px-3 py-1 md:px-1 rounded hover:bg-green-500 transition cursor-pointer"
                 onClick={() => navigate("/profile")}
               >
                 <User className="inline mr-2" />
 
-                <p className="text-sm font-semibold inline">
+                <p className="text-sm font-semibold inline md:text-xs">
                   {user.first_name} {user.last_name}
                 </p>
               </div>

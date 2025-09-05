@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import FarmForm from "../components/FarmForm";
 import type { FarmFormValues, GamePricing } from "../components/FarmForm";
+import { useState } from "react";
 
 const API_URL = "http://localhost:5000/farms";
 
@@ -20,11 +21,12 @@ interface AddFarmScreenProps {
 
 export default function AddFarmScreen({ user }: AddFarmScreenProps) {
   const navigate = useNavigate();
-
+  const [storing, setStoring] = useState(false);
   const handleCancel = () => navigate(-1);
 
   const handleSubmit = async (values: FarmFormValues, imageFiles: File[]) => {
     try {
+      setStoring(true);
       const formData = new FormData();
 
       formData.append("name", values.name);
@@ -62,7 +64,7 @@ export default function AddFarmScreen({ user }: AddFarmScreenProps) {
         const txt = await res.text();
         throw new Error(txt || "Failed to add farm");
       }
-
+      setStoring(false);
       alert("Farm added successfully!");
       navigate("/OwnerDashboard");
     } catch (error: any) {
@@ -73,6 +75,31 @@ export default function AddFarmScreen({ user }: AddFarmScreenProps) {
 
   return (
     <div className="min-h-screen bg-beige">
+      {storing && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black bg-opacity-50">
+          <svg
+            className="animate-spin h-10 w-10 text-white mb-3"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v8z"
+            ></path>
+          </svg>
+          <p className="text-white font-medium">Storing farm details...</p>
+        </div>
+      )}
       <div className="bg-black shadow-sm w-full">
         <div className="w-full px-6 lg:px-12">
           <div className="flex items-center justify-between h-20">
@@ -81,7 +108,6 @@ export default function AddFarmScreen({ user }: AddFarmScreenProps) {
               className="flex items-center text-white hover:bg-green-500 transition-colors text-lg"
             >
               <ArrowLeft className="w-6 h-6 mr-3" />
-              Back
             </button>
             <h1 className="text-2xl font-bold text-white">Add Farm</h1>
             <div className="w-32" />

@@ -106,7 +106,7 @@ export function BlogArticle() {
             })()}
           </div>
           <div className="bg-white rounded-3xl shadow-2xl p-12 mb-16">
-            <h1 className="text-brown mb-8 text-5xl leading-tight">
+            <h1 className="text-brown mb-8 text-2xl sm:text-2xl md:text-3xl lg:text-5xl leading-tight">
               {article.btitle}
             </h1>
 

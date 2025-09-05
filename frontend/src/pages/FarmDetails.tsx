@@ -56,26 +56,6 @@ interface Farm {
   reviewCount: number;
 }
 
-// function ImageWithFallback({
-//   src,
-//   fallbackSrc = "https://via.placeholder.com/800x600?text=No+Image",
-//   alt,
-//   ...props
-// }: React.ImgHTMLAttributes<HTMLImageElement> & { fallbackSrc?: string }) {
-//   const [imgSrc, setImgSrc] = useState(src);
-//   useEffect(() => {
-//     setImgSrc(src);
-//   }, [src]);
-//   return (
-//     <img
-//       src={imgSrc}
-//       alt={alt}
-//       onError={() => setImgSrc(fallbackSrc)}
-//       {...props}
-//     />
-//   );
-// }
-
 interface FarmDetailsProps {
   user: User | null;
 }
@@ -195,7 +175,7 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
           author: `${user.first_name} ${user.last_name}`,
           rating: data.review.rstar,
           date: new Date().toISOString().split("T")[0],
-          comment: data.review.rdecription,
+          comment: data.review.rdescription,
         },
         ...prev,
       ]);
@@ -214,7 +194,6 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
               className="flex items-center text-white hover:bg-green-500 transition-colors text-lg"
             >
               <ArrowLeft className="w-6 h-6 mr-3" />
-              Back
             </button>
             <h1 className="text-2xl font-bold text-white">{farmData.name}</h1>
             <div className="w-32" />
@@ -389,19 +368,39 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
                   Write Review
                 </button>
               </div>
-              {farmReviews.length > 0 ? (
-                farmReviews.map((rev) => (
-                  <div key={rev.id} className="border-b pb-4 mb-4">
-                    <div className="flex justify-between">
-                      <div>{rev.author}</div>
-                      <div>{new Date(rev.date).toISOString().slice(0, 10)}</div>
+              <div className="space-y-4">
+                {farmReviews.length > 0 ? (
+                  farmReviews.map((rev) => (
+                    <div key={rev.id} className="border-b pb-4">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-3">
+                          <div className="font-semibold">{rev.author}</div>
+                          <div className="text-sm text-gray-500">
+                            {new Date(rev.date).toISOString().slice(0, 10)}
+                          </div>
+                        </div>
+                        <div className="flex items-center">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Star
+                              key={s}
+                              className={`h-4 w-4 ${
+                                s <= rev.rating
+                                  ? "text-yellow fill-current"
+                                  : "text-gray-300"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-gray-700">{rev.comment}</p>
                     </div>
-                    <p>{rev.comment}</p>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    No reviews yet.
                   </div>
-                ))
-              ) : (
-                <p className="text-gray-500">No reviews yet.</p>
-              )}
+                )}
+              </div>
             </div>
           </div>
 
@@ -423,30 +422,53 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
             </div>
 
             <div className="bg-white rounded-lg shadow p-4">
-              <h4 className="font-semibold mb-3">Contact Info</h4>
-              <div className="space-y-2 text-gray-700">
-                <div className="flex items-center gap-3">
-                  <Phone className="w-4 h-4 text-green-600" />
-                  {farmData.phone}
+              <h4 className="font-semibold mb-3">Contact Information</h4>
+              <div className="space-y-2">
+                <div className="flex items-center gap-3 text-gray-700">
+                  <Phone className="w-4 h-4 text-green-600" />{" "}
+                  <a
+                    href={`tel:${farmData.phone}`}
+                    className="hover:text-green-600"
+                  >
+                    {farmData.phone}
+                  </a>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-green-600" />
-                  {farmData.email}
+                <div className="flex items-center gap-3 text-gray-700">
+                  <Mail className="w-4 h-4 text-green-600" />{" "}
+                  <a
+                    href={`mailto:${farmData.email}`}
+                    className="hover:text-green-600"
+                  >
+                    {farmData.email}
+                  </a>
                 </div>
-                {farmData.website && (
-                  <div className="flex items-center gap-3">
-                    <Globe className="w-4 h-4 text-green-600" />
-                    <a
-                      href={`https://${farmData.website}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {farmData.website}
-                    </a>
-                  </div>
-                )}
+                <div className="flex items-center gap-3 text-gray-700">
+                  <Globe className="w-4 h-4 text-green-600" />{" "}
+                  <a
+                    href={farmData.website ? `${farmData.website}` : "#"}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-green-600"
+                  >
+                    {farmData.website || "Website"}
+                  </a>
+                </div>
               </div>
             </div>
+            <section className="bg-white shadow-md rounded-lg p-4">
+              <h2 className="text-2xl font-semibold mb-2">Location</h2>
+              <p className="mb-2">{farmData.address}</p>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                  farmData.address
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                View on Google Maps
+              </a>
+            </section>
           </aside>
         </div>
       </main>
@@ -462,26 +484,29 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
       />
 
       {showFullGallery && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-5xl w-full overflow-y-auto">
-            <div className="p-4 flex justify-between items-center">
-              <h4 className="font-semibold">{farmData.name} — Gallery</h4>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setShowFullGallery(false)}
-                  className="px-3 py-1 rounded bg-gray-200"
-                >
-                  Close
-                </button>
-              </div>
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center p-2 sm:p-4">
+          <div className="bg-white rounded-lg w-full max-w-full sm:max-w-5xl h-full sm:h-auto overflow-y-auto">
+            {/* Header */}
+            <div className="p-3 sm:p-4 flex justify-between items-center border-b">
+              <h4 className="font-semibold text-sm sm:text-base truncate">
+                {farmData.name} — Gallery
+              </h4>
+              <button
+                onClick={() => setShowFullGallery(false)}
+                className="px-2 py-1 sm:px-3 sm:py-1 rounded bg-gray-200 text-sm sm:text-base"
+              >
+                Close
+              </button>
             </div>
-            <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            {/* Gallery Grid */}
+            <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
               {farmData.images.map((img: string, idx: number) => (
                 <div key={idx} className="rounded overflow-hidden">
                   <img
-                    src={`${img}`}
+                    src={img}
                     alt={`gallery-${idx}`}
-                    className="w-full h-64 object-cover"
+                    className="w-full h-48 sm:h-64 object-cover"
                   />
                 </div>
               ))}

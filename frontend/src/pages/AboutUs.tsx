@@ -124,14 +124,14 @@ export default function AboutUs() {
   return (
     <div className="min-h-screen bg-beige">
       {/* Hero Section */}
-      <div className="relative bg-black w-full h-96 overflow-hidden">
+      <div className="relative bg-black w-full  h-[300px] overflow-hidden">
         <div className="absolute inset-0 bg-brown bg-opacity-50"></div>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white px-4">
-            <h1 className="text-white mb-6 text-5xl font-semibold">
+            <h1 className="text-white mb-6  sm:text-6xl md:text-3xl sm:mb-4 lg:text-5xl font-semibold">
               About Hunter's Haven
             </h1>
-            <p className="text-2xl text-beige max-w-4xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-lg md:text-lg lg:text-2xl  text-beige max-w-3xl mx-auto leading-relaxed sm:px-4 md:px-6">
               South Africa's premier platform connecting hunters with authentic,
               ethical hunting experiences while supporting conservation and
               local communities
@@ -141,15 +141,15 @@ export default function AboutUs() {
       </div>
 
       {/* Stats Section */}
-      <div className="w-full bg-white py-16">
+      <div className="w-full bg-white py-12 sm:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-4">
             {stats.map((stat, i) => (
               <div key={i} className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
-                  {stat.number}
+                <div className="text-4xl  font-bold mb-2">{stat.number}</div>
+                <div className="text-gray-600 text-sm sm:text-xs">
+                  {stat.label}
                 </div>
-                <div className="text-gray-600 font-medium">{stat.label}</div>
               </div>
             ))}
           </div>

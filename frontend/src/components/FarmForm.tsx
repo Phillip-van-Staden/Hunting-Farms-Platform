@@ -409,15 +409,15 @@ const FarmForm: React.FC<FarmFormProps> = ({
 
             {/* Game Species */}
             <div className="space-y-6">
-              <h4 className="text-2xl font-bold text-brown">
+              <h4 className="text-xl sm:text-2xl font-bold text-brown">
                 Available Game Species
               </h4>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
                 {gameOptions.map((game) => (
                   <label
                     key={game}
-                    className="flex items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-primary transition-colors"
+                    className="flex items-center p-3 sm:p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-primary transition-colors"
                   >
                     <input
                       type="checkbox"
@@ -433,24 +433,26 @@ const FarmForm: React.FC<FarmFormProps> = ({
                             }))
                         )
                       }
-                      className="h-5 w-5 text-primary focus:ring-primary border-gray-300 rounded mr-3"
+                      className="h-4 w-4 sm:h-5 sm:w-5 text-primary focus:ring-primary border-gray-300 rounded mr-2 sm:mr-3"
                     />
-                    <span className="text-lg font-medium">{game}</span>
+                    <span className="text-sm sm:text-base md:text-lg font-medium">
+                      {game}
+                    </span>
                   </label>
                 ))}
               </div>
 
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h5 className="text-xl font-bold text-brown mb-4">
+              <div className="bg-gray-50 rounded-xl p-4 sm:p-6">
+                <h5 className="text-lg sm:text-xl font-bold text-brown mb-3 sm:mb-4">
                   Add Custom Game Species
                 </h5>
-                <div className="flex gap-4">
+                <div className="flex gap-2 sm:gap-4 flex-wrap">
                   <button
                     type="button"
                     onClick={addSpeciesToGameList}
-                    className="bg-green-200 text-black px-6 py-3 rounded-lg hover:bg-opacity-90 transition-colors font-semibold text-lg flex items-center"
+                    className="bg-green-200 text-black px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-lg hover:bg-opacity-90 transition-colors font-semibold text-sm sm:text-base md:text-lg flex items-center"
                   >
-                    <Plus className="w-5 h-5 mr-2 inline" />
+                    <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 inline" />
                     Add Species
                   </button>
                 </div>
@@ -650,7 +652,7 @@ const FarmForm: React.FC<FarmFormProps> = ({
                       }))
                     }
                     className="w-full px-6 py-5 border-2 border-gray-300 rounded-xl focus:ring-3 focus:ring-primary focus:border-primary outline-none text-xl"
-                    placeholder="www.yourfarm.co.za"
+                    placeholder="https://www.yourfarm.co.za"
                   />
                 </div>
               </div>
@@ -737,23 +739,21 @@ const FarmForm: React.FC<FarmFormProps> = ({
             </div>
 
             {/* Submit Buttons */}
-            <div className="flex justify-end pt-8 border-t border-gray-200">
-              <div className="flex gap-4">
-                <button
-                  type="button"
-                  onClick={onCancel}
-                  className="bg-red-500 text-white px-8 py-4 rounded-xl hover:bg-opacity-90 transition-colors font-bold text-lg"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-green-500 text-white px-8 py-4 rounded-xl hover:bg-opacity-90 transition-colors font-bold text-lg flex items-center"
-                >
-                  <Save className="w-5 h-5 mr-2" />
-                  {submitLabel}
-                </button>
-              </div>
+            <div className="flex flex-col sm:flex-row justify-end pt-6 sm:pt-8 border-t border-gray-200 gap-3 sm:gap-4">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="bg-red-500 text-white px-4 sm:px-8 py-2 sm:py-4 rounded-xl hover:bg-opacity-90 transition-colors font-bold text-sm sm:text-lg w-full sm:w-auto"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="bg-green-500 text-white px-4 sm:px-8 py-2 sm:py-4 rounded-xl hover:bg-opacity-90 transition-colors font-bold text-sm sm:text-lg flex items-center justify-center w-full sm:w-auto"
+              >
+                <Save className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+                {submitLabel}
+              </button>
             </div>
           </div>
         </div>
