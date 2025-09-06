@@ -1,6 +1,6 @@
 # Hunter's Haven - Hunting Farms Platform
 
-Hunter's Haven is South Africa's premier platform connecting hunters with exceptional hunting farms across the country. This comprehensive web application promotes sustainable hunting practices while supporting local conservation efforts and rural communities.
+[Visit Hunter's Haven](https://hunterhaven.netlify.app/)
 
 ## 🎯 Project Overview
 
