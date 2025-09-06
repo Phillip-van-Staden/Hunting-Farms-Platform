@@ -17,6 +17,9 @@ export function AddBlogs({ user }: { user: User | null }) {
   const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
   const [featuredImagePreview, setFeaturedImagePreview] = useState<string>("");
   const [storing, setStoring] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const userCategories = [
@@ -65,7 +68,8 @@ export function AddBlogs({ user }: { user: User | null }) {
     const file = e.target.files?.[0] ?? null;
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      alert("Please select an image file.");
+      setErrorMessage("Please select an image file.");
+      setShowErrorDialog(true);
       // clear invalid selection
       e.currentTarget.value = "";
       return;
@@ -132,11 +136,12 @@ export function AddBlogs({ user }: { user: User | null }) {
       const data = await res.json();
       console.log("Blog created:", data);
       setStoring(false);
-      alert("Blog submitted successfully! Pending approval.");
-      navigate("/blog"); // redirect after submit
+      setShowSuccessDialog(true);
     } catch (err) {
       console.error("Error submitting blog:", err);
-      alert("Error submitting blog.");
+      setStoring(false);
+      setErrorMessage("Error submitting blog.");
+      setShowErrorDialog(true);
     }
   };
 
@@ -368,6 +373,51 @@ export function AddBlogs({ user }: { user: User | null }) {
           </div>
         </div>
       </div>
+
+      {/* Success Dialog */}
+      {showSuccessDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-green-600">Success</h4>
+            </div>
+            <p className="text-gray-700 mb-4">
+              Blog submitted successfully! Pending approval.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowSuccessDialog(false);
+                  navigate("/blog");
+                }}
+                className="px-4 py-2 rounded bg-green-600 text-white"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Dialog */}
+      {showErrorDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-red-600">Error</h4>
+            </div>
+            <p className="text-gray-700 mb-4">{errorMessage}</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowErrorDialog(false)}
+                className="px-4 py-2 rounded bg-red-600 text-white"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

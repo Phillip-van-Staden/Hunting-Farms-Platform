@@ -15,6 +15,7 @@ interface Review {
   fname: string;
   pemail?: string;
   user?: string;
+  rdeleted: boolean;
 }
 
 export function AdminUserReviews() {
@@ -206,9 +207,9 @@ export function AdminUserReviews() {
             reviews.map((review) => (
               <div
                 key={review.rid}
-                className="bg-white rounded-xl shadow-lg p-8"
+                className="bg-white rounded-xl shadow-lg p-4"
               >
-                <div className="flex items-start justify-between mb-6">
+                <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <div className="flex items-center mb-2">
                       <h4 className="text-xl font-bold text-brown mr-4">
@@ -220,7 +221,7 @@ export function AdminUserReviews() {
                             key={i}
                             className={`w-5 h-5 ${
                               i < review.rstar
-                                ? "text-yellow fill-current"
+                                ? "text-yellow-500 fill-current"
                                 : "text-gray-300"
                             }`}
                           />
@@ -234,16 +235,19 @@ export function AdminUserReviews() {
                       {formatDate(review.rdate)}
                     </p>
                   </div>
-
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleDeleteReview(review.rid)}
-                      className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
-                      title="Delete Review"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
+                  {!review.rdeleted ? (
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleDeleteReview(review.rid)}
+                        className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                        title="Delete Review"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex space-x-2">Deleted</div>
+                  )}
                 </div>
 
                 <p className="text-gray-700 text-lg leading-relaxed mb-6">

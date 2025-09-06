@@ -77,7 +77,7 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
           onClick={() => navigate("/")}
         >
           <img
-            src="public/assets/logo.png"
+            src="assets/logo.png"
             alt="Logo"
             className="w-10 h-10 rounded-full border border-[var(--sandy-beige)]"
           />

@@ -35,6 +35,20 @@ const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Dialog states
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<{
+    type: "approve-blog" | "delete-blog" | "ban-user";
+    id: any;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  } | null>(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
   const idOf = (obj: any, ...candidates: string[]) => {
     for (const c of candidates) if (obj && obj[c] !== undefined) return obj[c];
     return undefined;
@@ -105,38 +119,58 @@ const AdminDashboard: React.FC = () => {
   }, []);
 
   const handleApproveBlog = async (blogId: any) => {
-    if (!confirm("Are you sure you want to approve this blog post?")) return;
-    try {
-      const id = idOf(blogId, "bid", "id", "bId", "_id") ?? blogId;
-      const res = await authenticatedFetch(`${API_URL}/admin/blogs/${id}`, {
-        method: "PUT",
-        body: JSON.stringify({ status: "Approved" }),
-      });
-      if (!res.ok) throw new Error("Failed to update blog status");
-      await fetchBlogs();
-      await fetchStats();
-      alert("Blog post has been approved and published!");
-    } catch (err: any) {
-      console.error(err);
-      alert(err.message || "Error approving blog");
-    }
+    const id = idOf(blogId, "bid", "id", "bId", "_id") ?? blogId;
+    setConfirmAction({
+      type: "approve-blog",
+      id,
+      title: "Approve Blog Post",
+      message: "Are you sure you want to approve this blog post?",
+      onConfirm: async () => {
+        try {
+          const res = await authenticatedFetch(`${API_URL}/admin/blogs/${id}`, {
+            method: "PUT",
+            body: JSON.stringify({ status: "Approved" }),
+          });
+          if (!res.ok) throw new Error("Failed to update blog status");
+          await fetchBlogs();
+          await fetchStats();
+          setSuccessMessage("Blog post has been approved and published!");
+          setShowSuccessDialog(true);
+        } catch (err: any) {
+          console.error(err);
+          setErrorMessage(err.message || "Error approving blog");
+          setShowErrorDialog(true);
+        }
+      },
+    });
+    setShowConfirmDialog(true);
   };
 
   const handleDeleteBlog = async (blogId: any) => {
-    if (!confirm("Are you sure you want to delete this blog post?")) return;
-    try {
-      const id = idOf(blogId, "bid", "id", "bId", "_id") ?? blogId;
-      const res = await authenticatedFetch(`${API_URL}/blogs/${id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error("Failed to delete blog");
-      await fetchBlogs();
-      await fetchStats();
-      alert("Blog post has been successfully deleted.");
-    } catch (err: any) {
-      console.error(err);
-      alert(err.message || "Error deleting blog");
-    }
+    const id = idOf(blogId, "bid", "id", "bId", "_id") ?? blogId;
+    setConfirmAction({
+      type: "delete-blog",
+      id,
+      title: "Delete Blog Post",
+      message: "Are you sure you want to delete this blog post?",
+      onConfirm: async () => {
+        try {
+          const res = await authenticatedFetch(`${API_URL}/blogs/${id}`, {
+            method: "DELETE",
+          });
+          if (!res.ok) throw new Error("Failed to delete blog");
+          await fetchBlogs();
+          await fetchStats();
+          setSuccessMessage("Blog post has been successfully deleted.");
+          setShowSuccessDialog(true);
+        } catch (err: any) {
+          console.error(err);
+          setErrorMessage(err.message || "Error deleting blog");
+          setShowErrorDialog(true);
+        }
+      },
+    });
+    setShowConfirmDialog(true);
   };
 
   const handleBanUser = async (userId: any) => {
@@ -154,24 +188,35 @@ const AdminDashboard: React.FC = () => {
         user.pblocked === "t"
     );
     const action = blocked ? "unban" : "ban";
-    if (!confirm(`Are you sure you want to ${action} this user?`)) return;
+    const id = idOf(user, "pid", "id", "pId", "_id") ?? userId;
 
-    try {
-      const id = idOf(user, "pid", "id", "pId", "_id") ?? userId;
-
-      const res = await authenticatedFetch(`${API_URL}/admin/users/${id}`, {
-        method: "PUT",
-      });
-      if (!res.ok) throw new Error("Failed to update user");
-      await fetchUsers();
-      await fetchStats();
-      alert(
-        `User has been successfully ${action === "ban" ? "banned" : "updated"}.`
-      );
-    } catch (err: any) {
-      console.error(err);
-      alert(err.message || "Error updating user");
-    }
+    setConfirmAction({
+      type: "ban-user",
+      id,
+      title: `${action === "ban" ? "Ban" : "Unban"} User`,
+      message: `Are you sure you want to ${action} this user?`,
+      onConfirm: async () => {
+        try {
+          const res = await authenticatedFetch(`${API_URL}/admin/users/${id}`, {
+            method: "PUT",
+          });
+          if (!res.ok) throw new Error("Failed to update user");
+          await fetchUsers();
+          await fetchStats();
+          setSuccessMessage(
+            `User has been successfully ${
+              action === "ban" ? "banned" : "updated"
+            }.`
+          );
+          setShowSuccessDialog(true);
+        } catch (err: any) {
+          console.error(err);
+          setErrorMessage(err.message || "Error updating user");
+          setShowErrorDialog(true);
+        }
+      },
+    });
+    setShowConfirmDialog(true);
   };
 
   const renderOverview = () => (
@@ -786,6 +831,75 @@ const AdminDashboard: React.FC = () => {
       </div>
       <div className="p-10" />
       <Footer />
+
+      {/* Confirmation Dialog */}
+      {showConfirmDialog && confirmAction && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold">{confirmAction.title}</h4>
+            </div>
+            <p className="text-gray-700 mb-4">{confirmAction.message}</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowConfirmDialog(false)}
+                className="px-3 py-1 rounded bg-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowConfirmDialog(false);
+                  confirmAction.onConfirm();
+                }}
+                className="px-3 py-1 rounded bg-red-600 text-white"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Dialog */}
+      {showSuccessDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-green-600">Success</h4>
+            </div>
+            <p className="text-gray-700 mb-4">{successMessage}</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowSuccessDialog(false)}
+                className="px-4 py-2 rounded bg-green-600 text-white"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Dialog */}
+      {showErrorDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-red-600">Error</h4>
+            </div>
+            <p className="text-gray-700 mb-4">{errorMessage}</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowErrorDialog(false)}
+                className="px-4 py-2 rounded bg-red-600 text-white"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

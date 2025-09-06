@@ -36,6 +36,9 @@ export default function EditFarmScreen({ user }: AddFarmScreenProps) {
   );
   const [loading, setLoading] = useState(true);
   const [storing, setStoring] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const normalizeImages = (images?: any[]) => {
     const arr = Array.isArray(images) ? images : [];
     return arr
@@ -100,8 +103,9 @@ export default function EditFarmScreen({ user }: AddFarmScreenProps) {
         }
       } catch (e) {
         console.error(e);
-        alert("Error loading farm");
-        navigate(-1);
+        setErrorMessage("Error loading farm");
+        setShowErrorDialog(true);
+        setLoading(false);
       } finally {
         setLoading(false);
       }
@@ -168,11 +172,12 @@ export default function EditFarmScreen({ user }: AddFarmScreenProps) {
         throw new Error(txt || "Failed to update farm");
       }
       setStoring(false);
-      alert("Farm updated successfully!");
-      navigate(-1);
+      setShowSuccessDialog(true);
     } catch (e: any) {
       console.error(e);
-      alert(`Error updating farm: ${e.message || e}`);
+      setStoring(false);
+      setErrorMessage(`Error updating farm: ${e.message || e}`);
+      setShowErrorDialog(true);
     }
   };
 
@@ -232,6 +237,49 @@ export default function EditFarmScreen({ user }: AddFarmScreenProps) {
         onCancel={handleCancel}
         onSubmit={handleSubmit}
       />
+
+      {/* Success Dialog */}
+      {showSuccessDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-green-600">Success</h4>
+            </div>
+            <p className="text-gray-700 mb-4">Farm updated successfully!</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowSuccessDialog(false);
+                  navigate(-1);
+                }}
+                className="px-4 py-2 rounded bg-green-600 text-white"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Dialog */}
+      {showErrorDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-red-600">Error</h4>
+            </div>
+            <p className="text-gray-700 mb-4">{errorMessage}</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowErrorDialog(false)}
+                className="px-4 py-2 rounded bg-red-600 text-white"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

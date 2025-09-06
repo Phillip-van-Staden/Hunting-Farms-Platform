@@ -61,25 +61,25 @@ export default function AboutUs() {
       name: "Phillip van Staden",
       position: "Founder & CEO",
       bio: "",
-      image: "public/assets/logo.png?auto=format&fit=crop&w=320&q=80",
+      image: "assets/logo.png?auto=format&fit=crop&w=320&q=80",
     },
     {
       name: "Phillip van Staden",
       position: "Head of Operations",
       bio: "",
-      image: "public/assets/logo.png?auto=format&fit=crop&w=320&q=80",
+      image: "assets/logo.png?auto=format&fit=crop&w=320&q=80",
     },
     {
       name: "Phillip van Staden",
       position: "Hunter Relations Manager",
       bio: "",
-      image: "public/assets/logo.png?auto=format&fit=crop&w=320&q=80",
+      image: "assets/logo.png?auto=format&fit=crop&w=320&q=80",
     },
     {
       name: "Phillip van Staden",
       position: "Community Liaison",
       bio: "",
-      image: "public/assets/logo.png?auto=format&fit=crop&w=320&q=80",
+      image: "assets/logo.png?auto=format&fit=crop&w=320&q=80",
     },
   ];
 

@@ -553,12 +553,6 @@ export default function FarmDetailsOwner() {
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
             <div className="flex items-center justify-between mb-4">
               <h4 className="font-semibold">Confirm Delete</h4>
-              <button
-                onClick={() => setIsDeleteConfirmOpen(false)}
-                className="text-gray-500"
-              >
-                Close
-              </button>
             </div>
             <p className="text-gray-700 mb-4">
               Are you sure you want to delete this farm? This action cannot be
