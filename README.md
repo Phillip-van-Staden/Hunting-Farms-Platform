@@ -16,6 +16,8 @@ Hunter's Haven serves as a comprehensive marketplace and community platform for 
 - **⭐ Review System**: Star ratings and detailed reviews for farms
 - **📊 Dashboard**: Farm owner dashboard for managing listings
 
+---
+
 ## 🚀 Technology Stack
 
 ### Frontend
@@ -23,11 +25,18 @@ Hunter's Haven serves as a comprehensive marketplace and community platform for 
 - **React** - Modern functional components with hooks
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first CSS framework with custom design tokens
+- **Netlify** - Deployment platform for frontend hosting
 
 ### Backend & Services
 
 - **Express.js** - A lightweight and flexible Node.js framework for building APIs and handling server-side logic
-- **PostgreSQL** - A robust, open-source relational database used for persistent data storage, providing powerful query capabilities and support for transaction
+- **PostgreSQL (Neon)** - A robust, open-source relational database hosted on **Neon**, providing powerful query capabilities and support for transactions
+- **bcrypt** - For secure password hashing
+- **JWT (JSON Web Tokens)** - For authentication and authorization
+- **Cloudinary** - Cloud-based storage and management of images
+- **Render** - Deployment platform for backend hosting
+
+---
 
 ## 👥 User Roles & Permissions
 
@@ -54,6 +63,8 @@ Hunter's Haven serves as a comprehensive marketplace and community platform for 
 - Approve or reject blog posts
 - Manage user accounts (ban, promote to admin)
 - Access comprehensive admin dashboard
+
+---
 
 ## 📱 Features Deep Dive
 
@@ -82,6 +93,8 @@ Hunter's Haven serves as a comprehensive marketplace and community platform for 
 - **Farm Oversight**: Monitor listings, approve new farms
 - **Platform Analytics**: Usage statistics and insights
 
+---
+
 ## 🎯 Target Audience
 
 ### Primary Users
@@ -97,6 +110,8 @@ Hunter's Haven serves as a comprehensive marketplace and community platform for 
 - **Farm Promotion**: Showcase hunting properties to potential clients
 - **Community Building**: Share experiences and connect with other hunters
 - **Conservation Education**: Learn about wildlife conservation efforts
+
+---
 
 ## 🌍 Business Impact
 
@@ -119,5 +134,18 @@ Hunter's Haven serves as a comprehensive marketplace and community platform for 
 - **Community Support**: Economic benefits to rural communities
 - **Education**: Raise awareness about conservation efforts
 - **Ethical Standards**: Ensure adherence to fair chase principles
+
+---
+
+## 🌐 Deployment
+
+The **Hunter's Haven** platform is deployed with the following services:
+
+- **Frontend**: Hosted on **Netlify** for fast, reliable, and globally distributed delivery
+- **Backend**: Hosted on **Render** for scalable API and server management
+- **Database**: **PostgreSQL** hosted on **Neon** for cloud-based database management
+- **Images**: Stored and served via **Cloudinary** for optimized image hosting and delivery
+
+---
 
 **Hunter's Haven** - Connecting hunters with authentic South African hunting experiences while promoting conservation and supporting local communities.
