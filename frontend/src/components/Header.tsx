@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { User as UserIcon, Menu, X } from "lucide-react";
 import type { User } from "../types/user";
+import logo from "/assets/logo.png";
 
 interface HeaderProps {
   user: User | null;
@@ -17,30 +18,35 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
       <Link
         to="/"
         className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
+        onClick={() => setIsDrawerOpen(false)}
       >
         Home
       </Link>
       <Link
         to="/farms"
         className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
+        onClick={() => setIsDrawerOpen(false)}
       >
         Farms
       </Link>
       <Link
         to="/blog"
         className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
+        onClick={() => setIsDrawerOpen(false)}
       >
         Blog
       </Link>
       <Link
         to="/about"
         className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
+        onClick={() => setIsDrawerOpen(false)}
       >
         About Us
       </Link>
       <Link
         to="/help"
         className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
+        onClick={() => setIsDrawerOpen(false)}
       >
         Help
       </Link>
@@ -50,6 +56,7 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
         <Link
           to="/OwnerDashboard"
           className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
+          onClick={() => setIsDrawerOpen(false)}
         >
           Farm Dashboard
         </Link>
@@ -58,6 +65,7 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
         <Link
           to="/admin"
           className="hover:text-green-500 transition-all duration-300 px-6 lg:px-6 md:px-2 md:text-sm"
+          onClick={() => setIsDrawerOpen(false)}
         >
           Admin
         </Link>
@@ -77,7 +85,7 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
           onClick={() => navigate("/")}
         >
           <img
-            src="assets/logo.png"
+            src={logo}
             alt="Logo"
             className="w-10 h-10 rounded-full border border-[var(--sandy-beige)]"
           />
@@ -196,16 +204,6 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
                     Farm Dashboard
                   </Link>
                 )}
-                {user?.admin && (
-                  <Link
-                    to="/admin"
-                    className="block px-3 py-2 rounded hover:bg-[var(--olive-green)] transition"
-                    onClick={() => setIsDrawerOpen(false)}
-                  >
-                    Admin
-                  </Link>
-                )}
-
                 <div className="px-1" />
                 <button
                   onClick={() => {

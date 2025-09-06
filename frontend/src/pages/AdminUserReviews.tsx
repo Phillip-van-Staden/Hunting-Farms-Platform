@@ -182,7 +182,7 @@ export function AdminUserReviews() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* User Info */}
         <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h2 className="text-3xl font-bold text-brown mb-2">
                 {displayUser.name}
@@ -194,7 +194,7 @@ export function AdminUserReviews() {
               )}
               <p className="text-gray-500 text-sm">User ID: {displayUser.id}</p>
             </div>
-            <div className="text-right">
+            <div className="mt-4 sm:mt-0 text-center sm:text-right">
               <p className="text-gray-600">Total Reviews</p>
               <p className="text-3xl font-bold text-primary">
                 {reviews.length}

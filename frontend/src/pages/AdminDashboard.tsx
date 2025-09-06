@@ -686,23 +686,25 @@ const AdminDashboard: React.FC = () => {
                     <Eye className="w-4 h-4" />
                     <span>View</span>
                   </button>
-                  {blocked ? (
-                    <button
-                      onClick={() => handleBanUser(uid)}
-                      className="text-green-600 hover:text-green-900 text-sm flex items-center space-x-1"
-                    >
-                      <CheckCircle className="w-4 h-4" />
-                      <span>Unban</span>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleBanUser(uid)}
-                      className="text-red-600 hover:text-red-900 text-sm flex items-center space-x-1"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      <span>Ban</span>
-                    </button>
-                  )}
+                  {!user.padmin ? (
+                    blocked ? (
+                      <button
+                        onClick={() => handleBanUser(uid)}
+                        className="text-green-600 hover:text-green-900 text-sm flex items-center space-x-1"
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                        <span>Unban</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleBanUser(uid)}
+                        className="text-red-600 hover:text-red-900 text-sm flex items-center space-x-1"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span>Ban</span>
+                      </button>
+                    )
+                  ) : null}
                 </div>
               </li>
             );

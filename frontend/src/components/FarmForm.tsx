@@ -486,6 +486,23 @@ const FarmForm: React.FC<FarmFormProps> = ({
                           },
                         }))
                       }
+                      onFocus={(e) => {
+                        if (e.target.value === "0") {
+                          e.target.value = ""; // Clear the value when focused, if it’s 0
+                        }
+                      }}
+                      onBlur={(e) => {
+                        if (e.target.value === "") {
+                          e.target.value = "0"; // Revert back to 0 if nothing was entered
+                          setFarmData((prev) => ({
+                            ...prev,
+                            pricing: {
+                              ...prev.pricing,
+                              dailyRate: 0,
+                            },
+                          }));
+                        }
+                      }}
                       className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none text-lg"
                       placeholder="450"
                       min="0"
@@ -523,6 +540,23 @@ const FarmForm: React.FC<FarmFormProps> = ({
                                   parseFloat(e.target.value || "0")
                                 )
                               }
+                              onFocus={(e) => {
+                                if (e.target.value === "0") {
+                                  e.target.value = ""; // Clear the value when focused, if it’s 0
+                                }
+                              }}
+                              onBlur={(e) => {
+                                if (e.target.value === "") {
+                                  e.target.value = "0"; // Revert back to 0 if nothing was entered
+                                  setFarmData((prev) => ({
+                                    ...prev,
+                                    pricing: {
+                                      ...prev.pricing,
+                                      dailyRate: 0,
+                                    },
+                                  }));
+                                }
+                              }}
                               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                               min="0"
                             />
@@ -541,6 +575,23 @@ const FarmForm: React.FC<FarmFormProps> = ({
                                   parseFloat(e.target.value || "0")
                                 )
                               }
+                              onFocus={(e) => {
+                                if (e.target.value === "0") {
+                                  e.target.value = ""; // Clear the value when focused, if it’s 0
+                                }
+                              }}
+                              onBlur={(e) => {
+                                if (e.target.value === "") {
+                                  e.target.value = "0"; // Revert back to 0 if nothing was entered
+                                  setFarmData((prev) => ({
+                                    ...prev,
+                                    pricing: {
+                                      ...prev.pricing,
+                                      dailyRate: 0,
+                                    },
+                                  }));
+                                }
+                              }}
                               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                               min="0"
                             />

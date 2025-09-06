@@ -51,7 +51,7 @@ export default function AddFarmScreen({ user }: AddFarmScreenProps) {
       // images
       imageFiles.forEach((file) => formData.append("images", file));
 
-      const res = await authenticatedFetch(`${API_URL}/addfarm`, {
+      const res = await authenticatedFetch(`${API_URL}/farms/addfarm`, {
         method: "POST",
         body: formData,
       });

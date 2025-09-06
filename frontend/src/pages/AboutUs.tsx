@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Users, Shield, Trophy, Heart, Award } from "lucide-react";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
+import logo from "/assets/logo.png";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const fallbackImage =
@@ -62,25 +63,25 @@ export default function AboutUs() {
       name: "Phillip van Staden",
       position: "Founder & CEO",
       bio: "",
-      image: "assets/logo.png?auto=format&fit=crop&w=320&q=80",
+      image: logo,
     },
     {
       name: "Phillip van Staden",
       position: "Head of Operations",
       bio: "",
-      image: "assets/logo.png?auto=format&fit=crop&w=320&q=80",
+      image: logo,
     },
     {
       name: "Phillip van Staden",
       position: "Hunter Relations Manager",
       bio: "",
-      image: "assets/logo.png?auto=format&fit=crop&w=320&q=80",
+      image: logo,
     },
     {
       name: "Phillip van Staden",
       position: "Community Liaison",
       bio: "",
-      image: "assets/logo.png?auto=format&fit=crop&w=320&q=80",
+      image: logo,
     },
   ];
 
