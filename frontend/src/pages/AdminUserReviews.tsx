@@ -28,6 +28,17 @@ export function AdminUserReviews() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Dialog states
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<{
+    reviewId: number;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  } | null>(null);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const idOf = (obj: AnyObj | undefined, ...candidates: string[]) => {
     if (!obj) return undefined;
     for (const c of candidates) if (obj && obj[c] !== undefined) return obj[c];
@@ -105,32 +116,41 @@ export function AdminUserReviews() {
   }, [userId]);
 
   const handleDeleteReview = async (reviewId: number) => {
-    if (
-      !confirm(
-        "Are you sure you want to delete this review? This action cannot be undone."
-      )
-    ) {
-      return;
-    }
+    setConfirmAction({
+      reviewId,
+      title: "Delete Review",
+      message:
+        "Are you sure you want to delete this review? This action cannot be undone.",
+      onConfirm: async () => {
+        try {
+          setLoading(true);
+          const res = await fetch(
+            `${API_URL}/admin/users/reviews/${reviewId}`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+            }
+          );
+          if (!res.ok) {
+            const txt = await res.text().catch(() => null);
+            throw new Error(
+              `Failed to delete review: ${res.status} ${txt ?? ""}`
+            );
+          }
 
-    try {
-      setLoading(true);
-      const res = await fetch(`${API_URL}/admin/users/reviews/${reviewId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!res.ok) {
-        const txt = await res.text().catch(() => null);
-        throw new Error(`Failed to delete review: ${res.status} ${txt ?? ""}`);
-      }
-
-      setReviews((prev) => prev.filter((r) => r.rid !== reviewId));
-    } catch (err: any) {
-      console.error("Error deleting review:", err);
-      alert(err.message || "Error deleting review");
-    } finally {
-      setLoading(false);
-    }
+          setReviews((prev) =>
+            prev.map((r) => (r.rid === reviewId ? { ...r, rdeleted: true } : r))
+          );
+        } catch (err: any) {
+          console.error("Error deleting review:", err);
+          setErrorMessage(err.message || "Error deleting review");
+          setShowErrorDialog(true);
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
+    setShowConfirmDialog(true);
   };
 
   const formatDate = (dateString: string) => {
@@ -258,6 +278,55 @@ export function AdminUserReviews() {
           )}
         </div>
       </div>
+
+      {/* Confirmation Dialog */}
+      {showConfirmDialog && confirmAction && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold">{confirmAction.title}</h4>
+            </div>
+            <p className="text-gray-700 mb-4">{confirmAction.message}</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowConfirmDialog(false)}
+                className="px-3 py-1 rounded bg-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowConfirmDialog(false);
+                  confirmAction.onConfirm();
+                }}
+                className="px-3 py-1 rounded bg-red-600 text-white"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Dialog */}
+      {showErrorDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-semibold text-red-600">Error</h4>
+            </div>
+            <p className="text-gray-700 mb-4">{errorMessage}</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowErrorDialog(false)}
+                className="px-4 py-2 rounded bg-red-600 text-white"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
