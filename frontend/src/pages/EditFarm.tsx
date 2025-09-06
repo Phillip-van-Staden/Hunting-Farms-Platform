@@ -5,7 +5,7 @@ import FarmForm from "../components/FarmForm";
 import type { FarmFormValues, GamePricing } from "../components/FarmForm";
 import { type User, authenticatedFetch } from "../utils/auth";
 
-const API_URL = "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 interface FarmFromApi {
   id: number;
   name: string;

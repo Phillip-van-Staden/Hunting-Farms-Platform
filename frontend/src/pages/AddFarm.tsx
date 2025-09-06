@@ -5,7 +5,7 @@ import type { FarmFormValues, GamePricing } from "../components/FarmForm";
 import { useState } from "react";
 import { authenticatedFetch, type User } from "../utils/auth";
 
-const API_URL = "http://localhost:5000/farms";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const formatToPostgresArray = (arr: any[]) => `{${arr.join(",")}}`;
 interface AddFarmScreenProps {

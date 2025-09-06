@@ -5,6 +5,8 @@ import { Eye, EyeOff, UserPlus, Users, Building } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { storeAuthData, type AuthResponse } from "../utils/auth";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 interface RegisterProps {
   onRegisterSuccess?: () => void;
 }
@@ -70,7 +72,7 @@ export const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/person/signup", {
+      const response = await fetch(`${API_URL}/person/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

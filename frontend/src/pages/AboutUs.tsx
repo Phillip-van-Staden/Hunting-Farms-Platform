@@ -3,6 +3,7 @@ import { Users, Shield, Trophy, Heart, Award } from "lucide-react";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const fallbackImage =
   "https://via.placeholder.com/320x320?text=No+Image+Available";
 
@@ -94,18 +95,10 @@ export default function AboutUs() {
     async function fetchStats() {
       try {
         const [farmRes, personRes, speciesRes, articleRes] = await Promise.all([
-          fetch("http://localhost:5000/stats/farmcount").then((res) =>
-            res.json()
-          ),
-          fetch("http://localhost:5000/stats/personcount").then((res) =>
-            res.json()
-          ),
-          fetch("http://localhost:5000/stats/speciescount").then((res) =>
-            res.json()
-          ),
-          fetch("http://localhost:5000/stats/articlecount").then((res) =>
-            res.json()
-          ),
+          fetch(`${API_URL}/stats/farmcount`).then((res) => res.json()),
+          fetch(`${API_URL}/stats/personcount`).then((res) => res.json()),
+          fetch(`${API_URL}/stats/speciescount`).then((res) => res.json()),
+          fetch(`${API_URL}/stats/articlecount`).then((res) => res.json()),
         ]);
 
         setStats([

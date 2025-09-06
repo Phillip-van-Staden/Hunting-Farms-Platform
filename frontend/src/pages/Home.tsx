@@ -91,18 +91,10 @@ const Home: React.FC = () => {
     async function fetchStats() {
       try {
         const [farmRes, personRes, speciesRes, articleRes] = await Promise.all([
-          fetch("http://localhost:5000/stats/farmcount").then((res) =>
-            res.json()
-          ),
-          fetch("http://localhost:5000/stats/personcount").then((res) =>
-            res.json()
-          ),
-          fetch("http://localhost:5000/stats/speciescount").then((res) =>
-            res.json()
-          ),
-          fetch("http://localhost:5000/stats/articlecount").then((res) =>
-            res.json()
-          ),
+          fetch(`${API_URL}/stats/farmcount`).then((res) => res.json()),
+          fetch(`${API_URL}/stats/personcount`).then((res) => res.json()),
+          fetch(`${API_URL}/stats/speciescount`).then((res) => res.json()),
+          fetch(`${API_URL}/stats/articlecount`).then((res) => res.json()),
         ]);
 
         setStats([

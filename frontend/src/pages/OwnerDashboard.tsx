@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Plus, MapPin, Star } from "lucide-react";
 import { type User, authenticatedFetch } from "../utils/auth";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 interface GamePricing {
   species: string;
   malePrice: number;
@@ -48,7 +50,7 @@ const OwnerDashboardScreen: React.FC<{ user: User | null }> = ({ user }) => {
     const fetchFarms = async () => {
       try {
         const res = await authenticatedFetch(
-          `http://localhost:5000/farms/${ownerId}/owner`
+          `${API_URL}/farms/${ownerId}/owner`
         );
         if (!res.ok) throw new Error("Failed to fetch farms");
         const data = await res.json();

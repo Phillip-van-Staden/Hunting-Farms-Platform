@@ -6,6 +6,8 @@ import { Eye, EyeOff, LogIn, Shield } from "lucide-react";
 import { storeAuthData, type AuthResponse } from "../utils/auth";
 import type { User } from "../types/user";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 interface LoginProps {
   onLoginSuccess: (user: User) => void;
 }
@@ -31,7 +33,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     setIsLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/person/login", {
+      const res = await fetch(`${API_URL}/person/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

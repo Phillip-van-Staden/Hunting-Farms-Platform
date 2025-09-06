@@ -13,7 +13,7 @@ const adminRoutes = require("./routes/adminRoutes.js");
 const fs = require("fs");
 const path = require("path");
 const app = express();
-app.use(cors());
+app.use(cors({ origin: process.env.ALLOWED_ORIGIN || "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
