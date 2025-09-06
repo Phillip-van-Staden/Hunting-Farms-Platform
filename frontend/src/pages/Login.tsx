@@ -3,16 +3,11 @@ import React, { useState } from "react";
 import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, LogIn, Shield } from "lucide-react";
+import { storeAuthData, type AuthResponse } from "../utils/auth";
+import type { User } from "../types/user";
 
 interface LoginProps {
-  onLoginSuccess: (user: {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    admin: boolean;
-    category: string;
-  }) => void;
+  onLoginSuccess: (user: User) => void;
 }
 
 const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
@@ -45,15 +40,17 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         }),
       });
 
-      const data = await res.json();
+      const data: AuthResponse = await res.json();
 
       if (!res.ok) {
-        setError(data?.message || "Login failed. Please try again.");
-        return;
+        // Try to extract error message from data if present, else use default
+        const errorMsg = (data as any)?.message || "Failed to login.";
+        throw new Error(errorMsg);
       }
 
-      localStorage.setItem("user", JSON.stringify(data));
-      onLoginSuccess(data);
+      // Store JWT token and user data
+      storeAuthData(data);
+      onLoginSuccess(data.user);
       navigate("/");
     } catch (err: any) {
       setError(err?.message || "Network error. Please try again.");

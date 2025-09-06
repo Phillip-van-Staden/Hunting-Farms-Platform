@@ -4,6 +4,7 @@ const FarmController = require("../controllers/FarmController");
 const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../cloudinary");
+const { authenticateToken } = require("../middleware/auth");
 
 // Setup multer with Cloudinary storage
 const storage = new CloudinaryStorage({
@@ -15,29 +16,35 @@ const storage = new CloudinaryStorage({
 });
 const upload = multer({ storage });
 
-// GET all farms
+// GET all farms (public route)
 router.get("/", FarmController.getAllFarms);
 
-// GET farms by owner
-router.get("/:pId/owner", FarmController.getFarmsByOwner);
+// GET farms by owner (protected route)
+router.get("/:pId/owner", authenticateToken, FarmController.getFarmsByOwner);
 
-// GET farm details
+// GET farm details (public route)
 router.get("/:fId/farmdetails", FarmController.getFarmDetails);
 
-// POST add farm
-router.post("/addfarm", upload.array("images", 10), FarmController.addFarm);
+// POST add farm (protected route)
+router.post(
+  "/addfarm",
+  authenticateToken,
+  upload.array("images", 10),
+  FarmController.addFarm
+);
 
-// PUT update farm details
+// PUT update farm details (protected route)
 router.put(
   "/:fId/farmdetails",
+  authenticateToken,
   upload.array("images", 10),
   FarmController.updateFarmDetails
 );
 
-// DELETE farm
-router.delete("/:fId", FarmController.deleteFarm);
+// DELETE farm (protected route)
+router.delete("/:fId", authenticateToken, FarmController.deleteFarm);
 
-// POST add review
-router.post("/:fid/review", FarmController.addReview);
+// POST add review (protected route)
+router.post("/:fid/review", authenticateToken, FarmController.addReview);
 
 module.exports = router;

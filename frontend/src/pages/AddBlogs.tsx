@@ -1,14 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  admin: boolean;
-  category: string;
-}
+import { type User, authenticatedFetch } from "../utils/auth";
 
 export function AddBlogs({ user }: { user: User | null }) {
   const [blogData, setBlogData] = useState({
@@ -128,13 +120,17 @@ export function AddBlogs({ user }: { user: User | null }) {
         formData.append("bimage", featuredImageFile);
       }
 
-      const res = await axios.post("http://localhost:5000/blogs", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const res = await authenticatedFetch("http://localhost:5000/blogs", {
+        method: "POST",
+        body: formData,
       });
 
-      console.log("Blog created:", res.data);
+      if (!res.ok) {
+        throw new Error("Failed to submit blog");
+      }
+
+      const data = await res.json();
+      console.log("Blog created:", data);
       setStoring(false);
       alert("Blog submitted successfully! Pending approval.");
       navigate("/blog"); // redirect after submit

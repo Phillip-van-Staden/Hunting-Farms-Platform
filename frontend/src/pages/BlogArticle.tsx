@@ -70,11 +70,10 @@ export function BlogArticle() {
         <div className="w-full px-6 lg:px-12">
           <div className="flex items-center justify-between h-20">
             <button
-              onClick={() => navigate("/blog")}
+              onClick={() => navigate(-1)}
               className="flex items-center text-white hover:text-green-600 transition-colors text-lg"
             >
               <ArrowLeft className="w-6 h-6 mr-3" />
-              Back to Blogs
             </button>
           </div>
         </div>

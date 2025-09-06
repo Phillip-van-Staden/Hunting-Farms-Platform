@@ -11,6 +11,7 @@ import {
   Plus,
 } from "lucide-react";
 import Footer from "../components/Footer";
+import { authenticatedFetch } from "../utils/auth";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -41,7 +42,7 @@ const AdminDashboard: React.FC = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch(`${API_URL}/admin/stats`);
+      const res = await authenticatedFetch(`${API_URL}/admin/stats`);
       if (!res.ok) throw new Error("Failed to fetch stats");
       const data = await res.json();
       setStats({
@@ -58,7 +59,7 @@ const AdminDashboard: React.FC = () => {
 
   const fetchFarms = async () => {
     try {
-      const res = await fetch(`${API_URL}/admin/farms`);
+      const res = await authenticatedFetch(`${API_URL}/admin/farms`);
       if (!res.ok) throw new Error("Failed to fetch farms");
       const data = await res.json();
       setFarms(Array.isArray(data) ? data : []);
@@ -70,7 +71,7 @@ const AdminDashboard: React.FC = () => {
 
   const fetchBlogs = async () => {
     try {
-      const res = await fetch(`${API_URL}/admin/blogs`);
+      const res = await authenticatedFetch(`${API_URL}/admin/blogs`);
       if (!res.ok) throw new Error("Failed to fetch blogs");
       const data = await res.json();
       setBlogs(Array.isArray(data) ? data : []);
@@ -82,7 +83,7 @@ const AdminDashboard: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch(`${API_URL}/admin/users`);
+      const res = await authenticatedFetch(`${API_URL}/admin/users`);
       if (!res.ok) throw new Error("Failed to fetch users");
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
@@ -107,9 +108,8 @@ const AdminDashboard: React.FC = () => {
     if (!confirm("Are you sure you want to approve this blog post?")) return;
     try {
       const id = idOf(blogId, "bid", "id", "bId", "_id") ?? blogId;
-      const res = await fetch(`${API_URL}/admin/blogs/${id}`, {
+      const res = await authenticatedFetch(`${API_URL}/admin/blogs/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "Approved" }),
       });
       if (!res.ok) throw new Error("Failed to update blog status");
@@ -126,7 +126,9 @@ const AdminDashboard: React.FC = () => {
     if (!confirm("Are you sure you want to delete this blog post?")) return;
     try {
       const id = idOf(blogId, "bid", "id", "bId", "_id") ?? blogId;
-      const res = await fetch(`${API_URL}/blogs/${id}`, { method: "DELETE" });
+      const res = await authenticatedFetch(`${API_URL}/blogs/${id}`, {
+        method: "DELETE",
+      });
       if (!res.ok) throw new Error("Failed to delete blog");
       await fetchBlogs();
       await fetchStats();
@@ -157,7 +159,7 @@ const AdminDashboard: React.FC = () => {
     try {
       const id = idOf(user, "pid", "id", "pId", "_id") ?? userId;
 
-      const res = await fetch(`${API_URL}/admin/users/${id}`, {
+      const res = await authenticatedFetch(`${API_URL}/admin/users/${id}`, {
         method: "PUT",
       });
       if (!res.ok) throw new Error("Failed to update user");

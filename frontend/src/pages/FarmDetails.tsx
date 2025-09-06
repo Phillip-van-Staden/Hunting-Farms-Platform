@@ -12,17 +12,10 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import { ReviewModal } from "../components/ReviewForm";
+import { type User } from "../types/user";
+import { authenticatedFetch } from "../utils/auth";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  admin: boolean;
-  category: string;
-}
 
 interface Review {
   id: number;
@@ -154,17 +147,17 @@ const FarmDetails: React.FC<FarmDetailsProps> = ({ user }) => {
     if (!user) return;
 
     try {
-      const res = await fetch(`${API_URL}/farms/${farmData?.id}/review`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user.id,
-          rating: review.rating,
-          comment: review.comment,
-        }),
-      });
+      const res = await authenticatedFetch(
+        `${API_URL}/farms/${farmData?.id}/review`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            userId: user.id,
+            rating: review.rating,
+            comment: review.comment,
+          }),
+        }
+      );
 
       if (!res.ok) throw new Error("Failed to submit review");
       const data = await res.json();

@@ -1,21 +1,42 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const adminController = require('../controllers/adminController');
+const adminController = require("../controllers/adminController");
+const { authenticateToken, requireAdmin } = require("../middleware/auth");
 
-router.get('/stats', adminController.getAdminStats);
+// All admin routes require authentication and admin privileges
+router.get(
+  "/stats",
+  authenticateToken,
+  requireAdmin,
+  adminController.getAdminStats
+);
 
-router.get('/farms', adminController.getFarms);
+router.get("/farms", authenticateToken, requireAdmin, adminController.getFarms);
 
-router.get('/blogs', adminController.getBlogs);
+router.get("/blogs", authenticateToken, requireAdmin, adminController.getBlogs);
 
+router.put(
+  "/blogs/:id",
+  authenticateToken,
+  requireAdmin,
+  adminController.updateBlog
+);
 
-router.put('/blogs/:id', adminController.updateBlog);
+router.get("/users", authenticateToken, requireAdmin, adminController.getUsers);
 
-router.get('/users', adminController.getUsers);
+router.put(
+  "/users/:id",
+  authenticateToken,
+  requireAdmin,
+  adminController.updateUser
+);
 
-router.put('/users/:id', adminController.updateUser);
-
-router.put('/users/reviews/:id', adminController.updateUserReviews);
-router.get('/users/:id/reviews', adminController.getUserReviews);
+router.put("/users/reviews/:id", adminController.updateUserReviews);
+router.get(
+  "/users/:id/reviews",
+  authenticateToken,
+  requireAdmin,
+  adminController.getUserReviews
+);
 
 module.exports = router;

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
+import { authenticatedFetch } from "../utils/auth";
 
 interface Review {
   id: number;
@@ -82,7 +83,9 @@ export default function FarmDetailsOwner() {
     const fetchFarm = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${API_URL}/farms/${id}/farmdetails`);
+        const res = await authenticatedFetch(
+          `${API_URL}/farms/${id}/farmdetails`
+        );
         if (!res.ok) throw new Error(`Failed to fetch farm: ${res.statusText}`);
         const data: FarmFromApi & { reviews?: Review[] } = await res.json();
 
@@ -198,7 +201,7 @@ export default function FarmDetailsOwner() {
 
   const confirmDeleteFarm = async () => {
     try {
-      const response = await fetch(`${API_URL}/farms/${farm.id}`, {
+      const response = await authenticatedFetch(`${API_URL}/farms/${farm.id}`, {
         method: "DELETE",
       });
 

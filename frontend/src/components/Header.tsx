@@ -1,15 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User, Menu, X } from "lucide-react";
-
-interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  admin: boolean;
-  category: string;
-}
+import { User as UserIcon, Menu, X } from "lucide-react";
+import type { User } from "../types/user";
 
 interface HeaderProps {
   user: User | null;
@@ -120,7 +112,7 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
                 className="border border-white px-3 py-1 md:px-1 rounded hover:bg-green-500 transition cursor-pointer"
                 onClick={() => navigate("/profile")}
               >
-                <User className="inline mr-2" />
+                <UserIcon className="inline mr-2" />
 
                 <p className="text-sm font-semibold inline md:text-xs">
                   {user.first_name} {user.last_name}

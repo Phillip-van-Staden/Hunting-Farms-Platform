@@ -3,16 +3,9 @@ import { ArrowLeft } from "lucide-react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import FarmForm from "../components/FarmForm";
 import type { FarmFormValues, GamePricing } from "../components/FarmForm";
+import { type User, authenticatedFetch } from "../utils/auth";
 
 const API_URL = "http://localhost:5000";
-interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  admin: boolean;
-  category: string;
-}
 interface FarmFromApi {
   id: number;
   name: string;
@@ -96,7 +89,9 @@ export default function EditFarmScreen({ user }: AddFarmScreenProps) {
         if (raw) {
           setInitialValues(toFormValues(raw));
         } else if (id) {
-          const res = await fetch(`${API_URL}/farms/${id}/farmdetails`);
+          const res = await authenticatedFetch(
+            `${API_URL}/farms/${id}/farmdetails`
+          );
           if (!res.ok) throw new Error("Failed to fetch farm details");
           const data: FarmFromApi = await res.json();
           setInitialValues(toFormValues(data));
@@ -160,10 +155,13 @@ export default function EditFarmScreen({ user }: AddFarmScreenProps) {
           )
         )
       );
-      const res = await fetch(`${API_URL}/farms/${id}/farmdetails`, {
-        method: "PUT",
-        body: formData,
-      });
+      const res = await authenticatedFetch(
+        `${API_URL}/farms/${id}/farmdetails`,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
 
       if (!res.ok) {
         const txt = await res.text();
@@ -171,7 +169,7 @@ export default function EditFarmScreen({ user }: AddFarmScreenProps) {
       }
       setStoring(false);
       alert("Farm updated successfully!");
-      navigate("/OwnerDashboard");
+      navigate(-1);
     } catch (e: any) {
       console.error(e);
       alert(`Error updating farm: ${e.message || e}`);

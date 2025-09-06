@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Footer from "../components/Footer";
 import { Eye, EyeOff, UserPlus, Users, Building } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { storeAuthData, type AuthResponse } from "../utils/auth";
 
 interface RegisterProps {
   onRegisterSuccess?: () => void;
@@ -83,18 +84,23 @@ export const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
         }),
       });
 
-      const data = await response.json();
+      const data: AuthResponse = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to register.");
+        // Try to extract error message from data if present, else use default
+        const errorMsg = (data as any)?.message || "Failed to register.";
+        throw new Error(errorMsg);
       }
+
+      // Store JWT token and user data
+      storeAuthData(data);
 
       if (onRegisterSuccess) {
         onRegisterSuccess();
       }
 
       console.log("Registered and logged in successfully:", data);
-      navigate("/login"); // Redirect to login (Header will show logged-in view)
+      navigate("/"); // Redirect to home page since user is now logged in
     } catch (err: any) {
       setError(err.message || "Something went wrong.");
     } finally {

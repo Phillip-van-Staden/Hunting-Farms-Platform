@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
-import { Calendar, User, Search, Tag, ChevronRight, Plus } from "lucide-react";
+import {
+  Calendar,
+  User as UserIcon,
+  Search,
+  Tag,
+  ChevronRight,
+  Plus,
+} from "lucide-react";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import { type User } from "../types/user";
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  admin: boolean;
-  category: string;
-}
 
 interface Blog {
   bid: number;
@@ -159,7 +160,7 @@ export function BlogScreen({ user }: BlogScreenProps) {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
                   <div className="flex items-center text-sm sm:text-base text-gray-500 space-x-4 sm:space-x-6">
                     <div className="flex items-center">
-                      <User className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3" />
+                      <UserIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3" />
                       <span>{featuredPost.author || "Anonymous"}</span>
                     </div>
                     <div className="flex items-center">
@@ -302,7 +303,7 @@ export function BlogScreen({ user }: BlogScreenProps) {
                   {/* Author + Date */}
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm text-gray-500 mb-4 sm:mb-5 space-y-2 sm:space-y-0">
                     <div className="flex items-center">
-                      <User className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
+                      <UserIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                       <span>{post.author || "Anonymous"}</span>
                     </div>
                     <div className="flex items-center">

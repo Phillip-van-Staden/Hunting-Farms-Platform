@@ -1,18 +1,12 @@
 import { useState } from "react";
+import { type User } from "../utils/auth";
+
 interface Review {
   id: number;
   rating: number;
   date: string;
   comment: string;
   author: string;
-}
-
-interface User {
-  first_name: string;
-  last_name: string;
-  email: string;
-  admin: boolean;
-  category: string;
 }
 
 interface ReviewModalProps {

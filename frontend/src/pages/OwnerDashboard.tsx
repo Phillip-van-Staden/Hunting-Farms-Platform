@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, MapPin, Star } from "lucide-react";
-
-interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  admin: boolean;
-  category: string;
-}
+import { type User, authenticatedFetch } from "../utils/auth";
 
 interface GamePricing {
   species: string;
@@ -55,7 +47,9 @@ const OwnerDashboardScreen: React.FC<{ user: User | null }> = ({ user }) => {
   useEffect(() => {
     const fetchFarms = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/farms/${ownerId}/owner`);
+        const res = await authenticatedFetch(
+          `http://localhost:5000/farms/${ownerId}/owner`
+        );
         if (!res.ok) throw new Error("Failed to fetch farms");
         const data = await res.json();
         setMyFarms(data);

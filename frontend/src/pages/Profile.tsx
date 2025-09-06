@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { User, Mail, Edit2 } from "lucide-react";
+import { User as UserIcon, Mail, Edit2 } from "lucide-react";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
-
-interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  admin: boolean;
-  category: string;
-}
+import { authenticatedFetch } from "../utils/auth";
+import type { User } from "../types/user";
 
 interface ProfileScreenProps {
   user: User | null;
@@ -44,7 +37,7 @@ export function ProfileScreen({ user }: ProfileScreenProps) {
     if (!user) return;
     const fetchUser = async () => {
       try {
-        const res = await fetch(`${API_URL}/person/${user.email}`);
+        const res = await authenticatedFetch(`${API_URL}/person/${user.email}`);
         if (!res.ok) throw new Error("Failed to fetch user");
         const data = await res.json();
 
@@ -75,11 +68,13 @@ export function ProfileScreen({ user }: ProfileScreenProps) {
 
     if (user) {
       try {
-        await fetch(`${API_URL}/person/updatenotifications/${user.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ psubscribe: value }),
-        });
+        await authenticatedFetch(
+          `${API_URL}/person/updatenotifications/${user.id}`,
+          {
+            method: "PUT",
+            body: JSON.stringify({ psubscribe: value }),
+          }
+        );
       } catch (err) {
         console.error("Error updating notifications:", err);
       }
@@ -89,9 +84,8 @@ export function ProfileScreen({ user }: ProfileScreenProps) {
   const handleSave = async () => {
     if (!user) return;
     try {
-      await fetch(`${API_URL}/person/update/${user.id}`, {
+      await authenticatedFetch(`${API_URL}/person/update/${user.id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           pnaam: formData.firstName,
           pvan: formData.lastName,
@@ -122,9 +116,8 @@ export function ProfileScreen({ user }: ProfileScreenProps) {
     }
 
     try {
-      await fetch(`${API_URL}/person/updatepassword/${user.id}`, {
+      await authenticatedFetch(`${API_URL}/person/updatepassword/${user.id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ newPassword: passwordData.newPassword }),
       });
       alert("Password changed successfully!");
@@ -159,7 +152,7 @@ export function ProfileScreen({ user }: ProfileScreenProps) {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-sm p-8 text-center">
               <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                <User className="w-25 h-25 text-green-500" />
+                <UserIcon className="w-25 h-25 text-green-500" />
               </div>
               <h2 className="text-brown mb-2 text-2xl">
                 {formData.firstName} {formData.lastName}

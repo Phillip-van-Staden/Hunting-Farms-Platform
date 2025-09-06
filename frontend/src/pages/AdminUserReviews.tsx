@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Star, Trash2 } from "lucide-react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { authenticatedFetch } from "../utils/auth";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -78,7 +79,9 @@ export function AdminUserReviews() {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`${API_URL}/admin/users/${userId}/reviews`);
+        const res = await authenticatedFetch(
+          `${API_URL}/admin/users/${userId}/reviews`
+        );
         if (!res.ok) {
           const text = await res.text().catch(() => null);
           throw new Error(

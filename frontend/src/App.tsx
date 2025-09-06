@@ -18,30 +18,24 @@ import { AddBlogs } from "./pages/AddBlogs";
 import { BlogArticle } from "./pages/BlogArticle";
 import AdminDashboard from "./pages/AdminDashboard";
 import { AdminUserReviews } from "./pages/AdminUserReviews";
-
-interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  admin: boolean;
-  category: string;
-}
+import { getUser, clearAuthData, isAuthenticated } from "./utils/auth";
+import type { User } from "./types/user";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
 
   // Load from localStorage on refresh
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (isAuthenticated()) {
+      const storedUser = getUser();
+      setUser(storedUser);
     }
   }, []);
 
   const handleSignOut = () => {
     setUser(null);
-    localStorage.removeItem("user");
+    clearAuthData();
   };
 
   return (
@@ -53,7 +47,17 @@ function App() {
           <Route path="/login" element={<Login onLoginSuccess={setUser} />} />
           <Route
             path="/register"
-            element={<Register onRegisterSuccess={() => {}} />}
+            element={
+              <Register
+                onRegisterSuccess={() => {
+                  // Refresh user state after successful registration
+                  if (isAuthenticated()) {
+                    const storedUser = getUser();
+                    setUser(storedUser);
+                  }
+                }}
+              />
+            }
           />
           <Route path="/help" element={<Help />} />
           <Route path="/about" element={<AboutUs />} />
@@ -71,23 +75,70 @@ function App() {
           <Route path="/farms" element={<FarmsPage />} />
           <Route path="/farms/:id" element={<FarmDetails user={user} />} />
           {/* <-- NEW route */}
-          <Route path="/profile" element={<ProfileScreen user={user} />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute user={user}>
+                <ProfileScreen user={user} />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/OwnerDashboard"
-            element={<OwnerDashboardScreen user={user} />}
+            element={
+              <ProtectedRoute user={user}>
+                <OwnerDashboardScreen user={user} />
+              </ProtectedRoute>
+            }
           />
-          <Route path="/add-farm" element={<AddFarmScreen user={user!} />} />
+          <Route
+            path="/add-farm"
+            element={
+              <ProtectedRoute user={user}>
+                <AddFarmScreen user={user!} />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/owner/edit-farm/:id"
-            element={<EditFarmScreen user={user!} />}
+            element={
+              <ProtectedRoute user={user}>
+                <EditFarmScreen user={user!} />
+              </ProtectedRoute>
+            }
           />
-          <Route path="/owner/farms/:id" element={<FarmDetailsOwner />} />{" "}
-          <Route path="/blogs/add" element={<AddBlogs user={user} />} />
+          <Route
+            path="/owner/farms/:id"
+            element={
+              <ProtectedRoute user={user}>
+                <FarmDetailsOwner />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/blogs/add"
+            element={
+              <ProtectedRoute user={user}>
+                <AddBlogs user={user} />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/blogs/:bid" element={<BlogArticle />} />
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute user={user} requireAdmin={true}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="admin/users/:id/reviews"
-            element={<AdminUserReviews />}
+            element={
+              <ProtectedRoute user={user} requireAdmin={true}>
+                <AdminUserReviews />
+              </ProtectedRoute>
+            }
           />
         </Routes>
       </Router>

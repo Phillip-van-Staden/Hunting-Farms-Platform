@@ -3,18 +3,11 @@ import { useNavigate } from "react-router-dom";
 import FarmForm from "../components/FarmForm";
 import type { FarmFormValues, GamePricing } from "../components/FarmForm";
 import { useState } from "react";
+import { authenticatedFetch, type User } from "../utils/auth";
 
 const API_URL = "http://localhost:5000/farms";
 
 const formatToPostgresArray = (arr: any[]) => `{${arr.join(",")}}`;
-interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  admin: boolean;
-  category: string;
-}
 interface AddFarmScreenProps {
   user: User;
 }
@@ -55,7 +48,7 @@ export default function AddFarmScreen({ user }: AddFarmScreenProps) {
       // images
       imageFiles.forEach((file) => formData.append("images", file));
 
-      const res = await fetch(`${API_URL}/addfarm`, {
+      const res = await authenticatedFetch(`${API_URL}/addfarm`, {
         method: "POST",
         body: formData,
       });

@@ -1,23 +1,35 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const personController = require('../controllers/personController');
+const personController = require("../controllers/personController");
+const { authenticateToken } = require("../middleware/auth");
 
-// Get all people
-router.get('/', personController.getPeople);
+// Get all people (protected route)
+router.get("/", authenticateToken, personController.getPeople);
 
-// Get person by email
-router.get('/:id', personController.getPersonByEmail);
+// Get person by email (protected route)
+router.get("/:id", authenticateToken, personController.getPersonByEmail);
 
-// Register new user
-router.post('/signup', personController.signup);
+// Register new user (public route)
+router.post("/signup", personController.signup);
 
-// User login
-router.post('/login', personController.login);
+// User login (public route)
+router.post("/login", personController.login);
 
-router.put('/update/:id', personController.updatePerson);
+// Update person (protected route)
+router.put("/update/:id", authenticateToken, personController.updatePerson);
 
-router.put('/updatepassword/:id', personController.updatePassword);
+// Update password (protected route)
+router.put(
+  "/updatepassword/:id",
+  authenticateToken,
+  personController.updatePassword
+);
 
-router.put('/updatenotifications/:id', personController.updateNotifications);
+// Update notifications (protected route)
+router.put(
+  "/updatenotifications/:id",
+  authenticateToken,
+  personController.updateNotifications
+);
 
 module.exports = router;

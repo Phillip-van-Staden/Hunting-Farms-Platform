@@ -2,27 +2,38 @@ const express = require("express");
 const router = express.Router();
 const blogController = require("../controllers/blogController");
 const multer = require("multer");
+const { authenticateToken } = require("../middleware/auth");
 
 // Setup multer for temporary file storage (before Cloudinary upload)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// GET all blogs
+// GET all blogs (public route)
 router.get("/", blogController.getAllBlogs);
 
-// GET all approved blogs
+// GET all approved blogs (public route)
 router.get("/approved", blogController.getApprovedBlogs);
 
-// GET blog details
+// GET blog details (public route)
 router.get("/:bid", blogController.getBlogDetails);
 
-// POST add blog
-router.post("/", upload.single("bimage"), blogController.addBlog);
+// POST add blog (protected route)
+router.post(
+  "/",
+  authenticateToken,
+  upload.single("bimage"),
+  blogController.addBlog
+);
 
-// PUT update blog
-router.put("/:id", upload.single("bimage"), blogController.updateBlog);
+// PUT update blog (protected route)
+router.put(
+  "/:id",
+  authenticateToken,
+  upload.single("bimage"),
+  blogController.updateBlog
+);
 
-// DELETE blog
-router.delete("/:id", blogController.deleteBlog);
+// DELETE blog (protected route)
+router.delete("/:id", authenticateToken, blogController.deleteBlog);
 
 module.exports = router;
