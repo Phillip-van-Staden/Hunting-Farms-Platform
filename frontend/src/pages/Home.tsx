@@ -49,18 +49,23 @@ interface Blog {
 const Home: React.FC = () => {
   const [featuredFarms, setFeaturedFarms] = useState<Farm[]>([]);
   const [latestInsights, setLatestInsights] = useState<Blog[]>([]);
+  const [loadingFarms, setLoadingFarms] = useState<boolean>(true);
+  const [loadingInsights, setLoadingInsights] = useState<boolean>(true);
   const navigate = useNavigate();
 
   // Fetch featured farms (top 3)
   useEffect(() => {
     const fetchFarms = async () => {
       try {
+        setLoadingFarms(true);
         const res = await fetch(`${API_URL}/farms/`);
         const data: Farm[] = await res.json();
         const shuffledFarms = data.sort(() => Math.random() - 0.5);
         setFeaturedFarms(shuffledFarms.slice(0, 3)); // take only first 3
       } catch (err) {
         console.error("Error fetching farms:", err);
+      } finally {
+        setLoadingFarms(false);
       }
     };
     fetchFarms();
@@ -70,11 +75,14 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchInsights = async () => {
       try {
+        setLoadingInsights(true);
         const res = await fetch(`${API_URL}/blogs/approved`);
         const data: Blog[] = await res.json();
         setLatestInsights(data.slice(0, 3)); // take latest 3
       } catch (err) {
         console.error("Error fetching blogs:", err);
+      } finally {
+        setLoadingInsights(false);
       }
     };
     fetchInsights();
@@ -188,38 +196,54 @@ const Home: React.FC = () => {
             </button>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            {featuredFarms.map((farm) => (
-              <div
-                key={farm.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
-              >
-                <img
-                  src={`${farm.images ? farm.images[0] : "default-farm.jpg"}`}
-                  alt={farm.name}
-                  className="h-48 w-full object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="text-xl font-semibold">{farm.name}</h3>
-                  <p className="text-gray-600">{farm.location}</p>
-                  <div className="flex items-center mt-2">
-                    <Star className="h-5 w-5 text-yellow-500" />
-                    <span className="ml-1">{farm.rating}</span>
-                  </div>
-                  <p className="mt-2 text-green-600 font-semibold">
-                    R{farm.pricing?.dailyRate}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {farm.categories.join(", ")}
-                  </p>
-                  <button
-                    onClick={() => navigate(`/farms/${farm.id}`)}
-                    className="mt-4 text-green-600 hover:text-green-800 flex items-center"
+            {loadingFarms
+              ? [1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse"
                   >
-                    View Details <ChevronRight className="ml-1 h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
+                    <div className="h-48 w-full bg-gray-300" />
+                    <div className="p-4 space-y-3">
+                      <div className="h-6 bg-gray-300 rounded w-3/4" />
+                      <div className="h-4 bg-gray-300 rounded w-1/2" />
+                      <div className="h-4 bg-gray-300 rounded w-1/3" />
+                    </div>
+                  </div>
+                ))
+              : featuredFarms.map((farm) => (
+                  <div
+                    key={farm.id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden"
+                  >
+                    <img
+                      src={`${
+                        farm.images ? farm.images[0] : "default-farm.jpg"
+                      }`}
+                      alt={farm.name}
+                      className="h-48 w-full object-cover"
+                    />
+                    <div className="p-4">
+                      <h3 className="text-xl font-semibold">{farm.name}</h3>
+                      <p className="text-gray-600">{farm.location}</p>
+                      <div className="flex items-center mt-2">
+                        <Star className="h-5 w-5 text-yellow-500" />
+                        <span className="ml-1">{farm.rating}</span>
+                      </div>
+                      <p className="mt-2 text-green-600 font-semibold">
+                        R{farm.pricing?.dailyRate}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {farm.categories.join(", ")}
+                      </p>
+                      <button
+                        onClick={() => navigate(`/farms/${farm.id}`)}
+                        className="mt-4 text-green-600 hover:text-green-800 flex items-center"
+                      >
+                        View Details <ChevronRight className="ml-1 h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
           </div>
         </div>
       </div>
@@ -237,37 +261,52 @@ const Home: React.FC = () => {
             </button>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            {latestInsights.map((insight) => (
-              <div
-                key={insight.bid}
-                className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col"
-              >
-                <img
-                  src={`${
-                    insight.bimage || "https://via.placeholder.com/400x200"
-                  }`}
-                  alt={insight.btitle}
-                  className="h-48 w-full object-cover"
-                />
-                <div className="p-4 flex-1 flex flex-col">
-                  <span className="text-sm text-gray-500">
-                    {formatDate(insight.bdate)}
-                  </span>
-                  <h3 className="text-xl font-semibold mt-2">
-                    {insight.btitle}
-                  </h3>
-                  <p className="text-gray-600 mt-2 flex-1">
-                    {insight.bdescription}
-                  </p>
-                  <button
-                    className="mt-4 text-green-600 hover:text-green-800 flex items-center"
-                    onClick={() => navigate(`/blogs/${insight.bid}`)}
+            {loadingInsights
+              ? [1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col animate-pulse"
                   >
-                    Read More <ChevronRight className="ml-1 h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
+                    <div className="h-48 w-full bg-gray-300" />
+                    <div className="p-4 space-y-3 flex-1">
+                      <div className="h-4 bg-gray-300 rounded w-1/3" />
+                      <div className="h-6 bg-gray-300 rounded w-3/4" />
+                      <div className="h-4 bg-gray-300 rounded w-full" />
+                      <div className="h-4 bg-gray-300 rounded w-5/6" />
+                    </div>
+                  </div>
+                ))
+              : latestInsights.map((insight) => (
+                  <div
+                    key={insight.bid}
+                    className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col"
+                  >
+                    <img
+                      src={`${
+                        insight.bimage || "https://via.placeholder.com/400x200"
+                      }`}
+                      alt={insight.btitle}
+                      className="h-48 w-full object-cover"
+                    />
+                    <div className="p-4 flex-1 flex flex-col">
+                      <span className="text-sm text-gray-500">
+                        {formatDate(insight.bdate)}
+                      </span>
+                      <h3 className="text-xl font-semibold mt-2">
+                        {insight.btitle}
+                      </h3>
+                      <p className="text-gray-600 mt-2 flex-1">
+                        {insight.bdescription}
+                      </p>
+                      <button
+                        className="mt-4 text-green-600 hover:text-green-800 flex items-center"
+                        onClick={() => navigate(`/blogs/${insight.bid}`)}
+                      >
+                        Read More <ChevronRight className="ml-1 h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
           </div>
         </div>
       </div>

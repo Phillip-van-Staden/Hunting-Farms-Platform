@@ -26,3 +26,4 @@ dist-ssr
 # Environment variables file
 .env
 JWT_IMPLEMENTATION.md
+user.txt

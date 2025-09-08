@@ -90,7 +90,9 @@ const Header: React.FC<HeaderProps> = ({ user, onSignOut }) => {
             className="w-10 h-10 rounded-full border border-[var(--sandy-beige)]"
           />
           <div className="px-2" />
-          <span className="text-xl  md:text-sm font-bold">Hunter's Haven</span>
+          <span className="text-xl  md:text-sm font-bold select-none">
+            Hunter's Haven
+          </span>
         </div>
 
         {/* Desktop Nav */}
